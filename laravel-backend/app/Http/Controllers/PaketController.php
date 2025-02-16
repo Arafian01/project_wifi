@@ -7,32 +7,52 @@ use Illuminate\Http\Request;
 
 class PaketController extends Controller
 {
+    // Menampilkan semua data paket
     public function index()
     {
-        return Paket::all();
+        $pakets = Paket::all();
+        return response()->json($pakets);
     }
 
+    // Menambahkan data paket baru
     public function store(Request $request)
     {
-        $paket = Paket::create($request->all());
+        $validated = $request->validate([
+            'nama_paket' => 'required|string|max:255',
+            'harga' => 'required|numeric',
+        ]);
+
+        $paket = Paket::create($validated);
         return response()->json($paket, 201);
     }
 
+    // Menampilkan detail data paket
     public function show($id)
     {
-        return Paket::findOrFail($id);
+        $paket = Paket::findOrFail($id);
+        return response()->json($paket);
     }
 
+    // Mengupdate data paket
     public function update(Request $request, $id)
     {
         $paket = Paket::findOrFail($id);
-        $paket->update($request->all());
-        return response()->json($paket, 200);
+
+        $validated = $request->validate([
+            'nama_paket' => 'required|string|max:255',
+            'harga' => 'required|numeric',
+        ]);
+
+        $paket->update($validated);
+        return response()->json($paket);
     }
 
+    // Menghapus data paket
     public function destroy($id)
     {
-        Paket::destroy($id);
-        return response()->json(null, 204);
+        $paket = Paket::findOrFail($id);
+        $paket->delete();
+
+        return response()->json(['message' => 'Paket deleted successfully']);
     }
 }
