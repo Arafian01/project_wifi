@@ -8,6 +8,7 @@ import AddPaketForm from '@app/components/AddPaketForm';
 const PaketPage = () => {
   const [pakets, setPakets] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingPaket, setEditingPaket] = useState(null);
 
   // Fetch data dari API
   useEffect(() => {
@@ -25,14 +26,66 @@ const PaketPage = () => {
   }, []);
 
   // Handler untuk menambahkan data baru
-  const handleAddPaket = (newPaket) => {
-    setPakets([...pakets, newPaket]);
-    setShowForm(false); // Menutup form setelah menambahkan data
+  const handleAddPaket = async (newPaket) => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/pakets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPaket),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add paket');
+      }
+
+      const addedPaket = await response.json();
+      setPakets([...pakets, addedPaket]);
+      setShowForm(false); // Menutup form setelah menambahkan data
+    } catch (error) {
+      console.error('Error adding paket:', error);
+    }
+  };
+
+  // Handler untuk mengedit data
+  const handleEditPaket = async (updatedPaket) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/pakets/${updatedPaket.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedPaket),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update paket');
+      }
+
+      const updatedData = await response.json();
+      setPakets(pakets.map((paket) => (paket.id === updatedData.id ? updatedData : paket)));
+      setEditingPaket(null); // Menutup mode edit
+    } catch (error) {
+      console.error('Error updating paket:', error);
+    }
   };
 
   // Handler untuk menghapus data
-  const handleDeletePaket = (id) => {
-    setPakets(pakets.filter((paket) => paket.id !== id));
+  const handleDeletePaket = async (id) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/pakets/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete paket');
+      }
+
+      setPakets(pakets.filter((paket) => paket.id !== id));
+    } catch (error) {
+      console.error('Error deleting paket:', error);
+    }
   };
 
   return (
@@ -51,15 +104,24 @@ const PaketPage = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Data Paket</h2>
             <button
-              onClick={() => setShowForm(!showForm)}
+              onClick={() => {
+                setEditingPaket(null);
+                setShowForm(!showForm);
+              }}
               className="bg-primary text-white px-4 py-2 rounded hover:bg-red-700"
             >
               Tambah Data
             </button>
           </div>
 
-          {/* Form Tambah Data */}
-          {showForm && <AddPaketForm onAddPaket={handleAddPaket} />}
+          {/* Form Tambah/Edit Data */}
+          {showForm && (
+            <AddPaketForm
+              onAddPaket={handleAddPaket}
+              onEditPaket={handleEditPaket}
+              editingPaket={editingPaket}
+            />
+          )}
         </div>
 
         {/* Table Section */}
@@ -82,7 +144,13 @@ const PaketPage = () => {
                   <td className="py-2 px-4">{paket.harga}</td>
                   <td className="py-2 px-4">-</td>
                   <td className="py-2 px-4 space-x-2">
-                    <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
+                    <button
+                      onClick={() => {
+                        setEditingPaket(paket);
+                        setShowForm(true);
+                      }}
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700"
+                    >
                       Edit
                     </button>
                     <button

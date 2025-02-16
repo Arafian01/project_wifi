@@ -1,11 +1,22 @@
 // src/app/components/AddPaketForm.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const AddPaketForm = ({ onAddPaket }) => {
+const AddPaketForm = ({ onAddPaket, onEditPaket, editingPaket }) => {
   const [namaPaket, setNamaPaket] = useState('');
   const [harga, setHarga] = useState('');
+
+  // Reset form jika tidak dalam mode edit
+  useEffect(() => {
+    if (editingPaket) {
+      setNamaPaket(editingPaket.nama_paket);
+      setHarga(editingPaket.harga);
+    } else {
+      setNamaPaket('');
+      setHarga('');
+    }
+  }, [editingPaket]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,21 +27,18 @@ const AddPaketForm = ({ onAddPaket }) => {
       return;
     }
 
-    // Simulasi data baru
-    const newPaket = {
-      id: Date.now(),
+    const paketData = {
       nama_paket: namaPaket,
       harga: harga,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     };
 
-    // Kirim data ke parent component
-    onAddPaket(newPaket);
-
-    // Reset form
-    setNamaPaket('');
-    setHarga('');
+    if (editingPaket) {
+      // Mode edit
+      onEditPaket({ ...paketData, id: editingPaket.id });
+    } else {
+      // Mode tambah
+      onAddPaket(paketData);
+    }
   };
 
   return (
@@ -59,7 +67,7 @@ const AddPaketForm = ({ onAddPaket }) => {
         type="submit"
         className="bg-primary text-white px-4 py-2 rounded hover:bg-red-700"
       >
-        Simpan
+        {editingPaket ? 'Simpan Perubahan' : 'Simpan'}
       </button>
     </form>
   );
