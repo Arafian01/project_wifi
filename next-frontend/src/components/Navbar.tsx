@@ -14,7 +14,7 @@ const Navbar = () => {
 
       {/* Menu Items */}
       <div className="hidden md:flex space-x-4">
-        <Link href="/" className="hover:text-gray-300">Dashboard</Link>
+        <Link href="/dashboard" className="hover:text-gray-300">Dashboard</Link>
         <Link href="/pelanggan" className="hover:text-gray-300">Pelanggan</Link>
         <Link href="/tagihan" className="hover:text-gray-300">Tagihan</Link>
         <Link href="/paket" className="hover:text-gray-300">Paket</Link>
