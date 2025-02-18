@@ -33,57 +33,33 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validate all incoming data
         $request->validate([
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:admin,user,customer'],
-            'paket_id' => ['required', 'exists:pakets,id'],
             'nama' => ['required', 'string', 'max:255'],
-            'alamat' => ['required', 'string'],
-            'telepon' => ['required', 'string', 'regex:/^\+?[0-9]{10,15}$/'],
-            'status' => ['required', 'in:active,inactive'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', Rules\Password::defaults()],
+            'telepon' => ['required', 'string', 'max:15'],
+            'alamat' => ['required', 'string', 'max:255'],
+            'paket_id' => ['required', 'exists:pakets,id'],
         ]);
-
-        if ($request->role === '') {
-            $role = 'customer';
-        } else {
-            $role = $request->role;
-        }
-
-        // Use a database transaction to ensure atomicity
-        DB::beginTransaction();
-        try {
-            // Create the user
-            $user = User::create([
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => $role,
-            ]);
-
-            // Create the associated customer record
-            Pelanggan::create([
-                'user_id' => $user->id,
-                'paket_id' => $request->paket_id,
-                'nama' => $request->nama,
-                'alamat' => $request->alamat,
-                'telepon' => $request->telepon,
-                'status' => $request->status,
-            ]);
-
-            // Commit the transaction
-            DB::commit();
-
-            // Dispatch the Registered event and log in the user
-            event(new Registered($user));
-            Auth::login($user);
-
-            // Redirect to the dashboard
-            return redirect(route('dashboard'));
-        } catch (\Exception $e) {
-            // Roll back the transaction on failure
-            DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Registration failed. Please try again.']);
-        }
+    
+        $user = User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'pelanggan',
+        ]);
+    
+        Pelanggan::create([
+            'user_id' => $user->id,
+            'paket_id' => $request->paket_id,
+            'telepon' => $request->telepon,
+            'alamat' => $request->alamat,
+        ]);
+    
+        event(new Registered($user));
+    
+        auth::login($user);
+    
+        return redirect()->route('dashboard');
     }
 }
