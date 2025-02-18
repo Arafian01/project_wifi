@@ -13,4 +13,8 @@ class paket extends Model
     ];
 
     protected $table = 'paket';
+    public function pelanggan()
+    {
+        return $this->hasMany(Pelanggan::class, 'paket_id');
+    }
 }
