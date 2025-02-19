@@ -39,27 +39,37 @@ class RegisteredUserController extends Controller
             'password' => ['required', Rules\Password::defaults()],
             'telepon' => ['required', 'string', 'max:15'],
             'alamat' => ['required', 'string', 'max:255'],
-            'paket_id' => ['required', 'exists:pakets,id'],
+            'paket_id' => ['required', 'exists:paket,id'], 
         ]);
     
-        $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'pelanggan',
-        ]);
+        DB::beginTransaction(); 
     
-        Pelanggan::create([
-            'user_id' => $user->id,
-            'paket_id' => $request->paket_id,
-            'telepon' => $request->telepon,
-            'alamat' => $request->alamat,
-        ]);
+        try {
+            $user = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'pelanggan',
+            ]);
     
-        event(new Registered($user));
+            Pelanggan::create([
+                'user_id' => $user->id,
+                'nama' => $request->nama, // Simpan nama di tabel pelanggan, bukan users
+                'paket_id' => $request->paket_id,
+                'telepon' => $request->telepon,
+                'alamat' => $request->alamat,
+                'status' => 'nonaktif',
+            ]);
     
-        auth::login($user);
+            DB::commit(); // Simpan data ke database
     
-        return redirect()->route('dashboard');
+            event(new Registered($user));
+    
+            Auth::login($user);
+    
+            return redirect()->route('dashboard');
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan jika ada error
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat registrasi.']);
+        }
     }
 }

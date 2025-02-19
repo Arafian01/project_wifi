@@ -62,7 +62,7 @@
 
         <div class="mb-5 mt-4">
             <label for="paket" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket</label>
-            <select class="js-example-placeholder-single js-states form-control w-full m-6 p-3" name="id_paket" id="paket"
+            <select class="js-example-placeholder-single js-states form-control w-full m-6 p-3" name="paket_id" id="paket"
                 data-placeholder="Pilih paket" >
                 <option value="">Pilih...</option>
                 @foreach ($paket as $p)
