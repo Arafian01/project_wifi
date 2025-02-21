@@ -28,19 +28,19 @@
                                         NAMA
                                     </th>
                                     <th scope="col" class="px-6 py-3">
+                                        PAKET
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
                                         ALAMAT
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         TELEPON
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        PAKET
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
                                         STATUS
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        
+
                                     </th>
                                 </tr>
                             </thead>
@@ -72,14 +72,17 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <button type="button" data-id="{{ $p->id }}"
-                                                data-modal-target="sourceModalEdit" data-nama="{{ $p->nama }}"
+                                                data-modal-target="sourceModalEdit" data-nama="{{ $p->user->nama }}"
+                                                data-email="{{ $p->user->email }}" data-password="{{ $p->user->password }}"
                                                 data-alamat="{{ $p->alamat }}" data-telepon="{{ $p->telepon }}"
-                                                data-paket="{{ $p->paket }}" data-status="{{ $p->status }}"
+                                                data-paket="{{ $p->paket_id }}" data-status="{{ $p->status }}"
                                                 data-status="{{ $p->status }}" onclick="editSourceModal(this)"
                                                 class="bg-amber-500 hover:bg-amber-600 px-3 py-1 rounded-md text-xs text-white">
                                                 Edit
                                             </button>
-                                            <button onclick="return konsumenDelete('{{$p->id}}','{{$p->nama}}')" class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
+                                            <button
+                                                onclick="return konsumenDelete('{{ $p->id }}','{{ $p->nama }}')"
+                                                class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -91,46 +94,77 @@
         </div>
     </div>
     <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModal">
-        <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
+        <div class="fixed inset-0 bg-black opacity-50"></div>
         <div class="fixed inset-0 flex items-center justify-center">
             <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5">
                 <div class="flex items-start justify-between p-4 border-b rounded-t">
                     <h3 class="text-xl font-semibold text-gray-900" id="title_source">
                         Tambah Pelanggan
                     </h3>
-                    <button type="button" onclick="sourceModalClose()"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                    <button type="button" onclick="sourceModalClose()" data-modal-target="sourceModal"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                        data-modal-hide="defaultModal">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
                 <form method="POST" id="formSourceModal">
                     @csrf
                     <div class="flex flex-col p-4 space-y-6">
-                        <div class="mb-5">
+                        <div class="">
                             <label for="nama"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
                             <input type="text" id="nama" name="nama"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required />
+                        </div>
+                        <div class="">
+                            <label for="email"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                            <input type="email" id="email" name="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="text" id="password" name="password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
+                            <label for="paket"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
+                                name="paket" data-placeholder="Pilih Paket">
+                                <option value="">Pilih...</option>
+                                @foreach ($pakets as $p)
+                                    <option value="{{ $p->id }}">
+                                        {{ $p->nama_paket }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="">
                             <label for="alamat"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat</label>
                             <input type="text" id="alamat" name="alamat"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required />
+                        </div>
+                        <div class="">
                             <label for="telepon"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Telepon</label>
-                            <input type="number" id="telepon" name="telepon"
+                            <input type="text" id="telepon" name="telepon"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required />
                         </div>
-                        <div class="mb-5">
+                        <div class="">
                             <label for="status"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
                             <select class="js-example-placeholder-single js-states form-control w-full m-6"
                                 name="status" data-placeholder="Pilih Status">
                                 <option value="">Pilih...</option>
-                                <option value="MAHASISWA">MAHASISWA</option>
-                                <option value="KARYAWAN">KARYAWAN</option>
+                                <option value="aktif">AKTIF</option>
+                                <option value="nonaktif">NONAKTIF</option>
                             </select>
                         </div>
                     </div>
@@ -150,7 +184,7 @@
             <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5">
                 <div class="flex items-start justify-between p-4 border-b rounded-t">
                     <h3 class="text-xl font-semibold text-gray-900" id="title_source">
-                        Update Konsumen
+                        Update Pelanggan
                     </h3>
                     <button type="button" onclick="sourceModalClose()"
                         class="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
@@ -160,22 +194,61 @@
                 <form method="POST" id="formSourceModalEdit">
                     @csrf
                     <div class="flex flex-col p-4 space-y-6">
-                        <div class="mb-5">
-                            <label for="konsumen"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Konsumen</label>
-                            <input type="text" id="konsumen_edit" name="konsumen"
+                        <div class="">
+                            <label for="nama"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                            <input type="text" id="nama_edit" name="nama"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required />
                         </div>
-                        <div class="mb-5">
+                        <div class="">
+                            <label for="email"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                            <input type="email" id="email_edit" name="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="text" id="password_edit" name="password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
+                            <label for="paket"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
+                                name="paket" data-placeholder="Pilih Paket">
+                                <option value="">Pilih...</option>
+                                @foreach ($pakets as $p)
+                                    <option value="{{ $p->id }}">
+                                        {{ $p->nama_paket }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="">
+                            <label for="alamat"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat</label>
+                            <input type="text" id="alamat_edit" name="alamat"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
+                            <label for="telepon"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Telepon</label>
+                            <input type="text" id="telepon_edit" name="telepon"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                required />
+                        </div>
+                        <div class="">
                             <label for="status"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
-                            <select id="status_edit"
-                                class="js-example-placeholder-single js-states form-control w-full" name="status"
-                                data-placeholder="Pilih Status">
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
+                                name="status" data-placeholder="Pilih Status">
                                 <option value="">Pilih...</option>
-                                <option value="MAHASISWA">MAHASISWA</option>
-                                <option value="KARYAWAN">KARYAWAN</option>
+                                <option value="aktif">AKTIF</option>
+                                <option value="nonaktif">NONAKTIF</option>
                             </select>
                         </div>
                     </div>
@@ -217,7 +290,10 @@
             const formModal = document.getElementById('formSourceModalEdit');
             const modalTarget = button.dataset.modalTarget;
             const id = button.dataset.id;
-            const konsumen = button.dataset.konsumen;
+            const pelanggan = button.dataset.nama;
+            const alamat = button.dataset.alamat;
+            const telepon = button.dataset.telepon;
+            const paket = button.dataset.paket;
             const statusValue = button.dataset.status;
 
             let url = "{{ route('pelanggan.update', ':id') }}".replace(':id', id);
@@ -225,11 +301,15 @@
             console.log(url);
             document.getElementById('title_source').innerText = `Update pelanggan ${pelanggan}`;
 
-            document.getElementById('pelanggan_edit').value = pelanggan;
+            document.getElementById('nama_edit').value = pelanggan;
+            document.getElementById('alamat_edit').value = alamat;
+            document.getElementById('telepon_edit').value = telepon;
+            document.getElementById('paket_edit').value = paket;
             document.getElementById('status_edit').value = statusValue;
 
             let event = new Event('change');
             document.getElementById('status_edit').dispatchEvent(event);
+
 
             formModal.setAttribute('action', url);
 
