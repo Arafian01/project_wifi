@@ -22,7 +22,6 @@ class PelangganController extends Controller
         $request->validate([
             'user_id' => 'required',
             'paket_id' => 'required',
-            'nama' => 'required',
             'alamat' => 'required',
             'telepon' => 'required',
             'status' => 'required',
@@ -36,7 +35,6 @@ class PelangganController extends Controller
         $request->validate([
             'user_id' => 'required',
             'paket_id' => 'required',
-            'nama' => 'required',
             'alamat' => 'required',
             'telepon' => 'required',
             'status' => 'required',

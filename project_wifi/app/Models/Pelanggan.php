@@ -11,7 +11,6 @@ class Pelanggan extends Model
     protected $fillable = [
         'user_id', 
         'paket_id', 
-        'nama', 
         'alamat', 
         'telepon', 
         'status'

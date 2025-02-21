@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('paket_id'); 
-            $table->string('nama');
             $table->string('alamat');
             $table->string('telepon');
             $table->enum('status', ['aktif', 'nonaktif']);
