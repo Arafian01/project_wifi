@@ -14,7 +14,11 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::paginate(10);
         $pakets = Paket::all();
         $users = User::all();
-        return view('page.pelanggan.index', compact('pelanggan', 'pakets', 'users'));
+        return view('page.pelanggan.index') ->with([
+            'pelanggan' => $pelanggan,
+            'pakets' => $pakets,
+            'users' => $users,
+        ]);
     }
 
     public function store(Request $request)
