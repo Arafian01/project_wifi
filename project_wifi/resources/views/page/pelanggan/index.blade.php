@@ -178,7 +178,7 @@
             </div>
         </div>
     </div>
-    <div class="fixed inset-0 flex items-center justify-center z-50 hidden" id="sourceModalEdit">
+    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
         <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
         <div class="fixed inset-0 flex items-center justify-center">
             <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5">
@@ -218,7 +218,7 @@
                         <div class="">
                             <label for="paket"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6" id="paket_edit"
                                 name="paket" data-placeholder="Pilih Paket">
                                 <option value="">Pilih...</option>
                                 @foreach ($pakets as $p)
@@ -244,7 +244,7 @@
                         <div class="">
                             <label for="status"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6" id="status_edit"
                                 name="status" data-placeholder="Pilih Status">
                                 <option value="">Pilih...</option>
                                 <option value="aktif">AKTIF</option>
@@ -291,9 +291,11 @@
             const modalTarget = button.dataset.modalTarget;
             const id = button.dataset.id;
             const pelanggan = button.dataset.nama;
+            const email = button.dataset.email;
+            const password = button.dataset.password;
             const alamat = button.dataset.alamat;
             const telepon = button.dataset.telepon;
-            const paket = button.dataset.paket;
+            const paketValue = button.dataset.paket;
             const statusValue = button.dataset.status;
 
             let url = "{{ route('pelanggan.update', ':id') }}".replace(':id', id);
@@ -303,12 +305,17 @@
 
             document.getElementById('nama_edit').value = pelanggan;
             document.getElementById('alamat_edit').value = alamat;
+            document.getElementById('email_edit').value = email;
+            document.getElementById('password_edit').value = password;
             document.getElementById('telepon_edit').value = telepon;
-            document.getElementById('paket_edit').value = paket;
-            document.getElementById('status_edit').value = statusValue;
-
+            console.log(paketValue);
+            
             let event = new Event('change');
+            document.getElementById('status_edit').value = statusValue;
             document.getElementById('status_edit').dispatchEvent(event);
+
+            document.getElementById('paket_edit').value = paketValue;
+            document.getElementById('paket_edit').dispatchEvent(event);
 
 
             formModal.setAttribute('action', url);
