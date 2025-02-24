@@ -40,9 +40,6 @@ class PaketController extends Controller
         return back()->with('message_delete', 'Data Supplier Sudah dihapus');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $data = Paket::findOrFail($id);

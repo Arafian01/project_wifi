@@ -135,8 +135,8 @@
                                 required />
                         </div>
                         <div>
-                            <label for="paket" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="paket" data-placeholder="Pilih Paket">
+                            <label for="paket_id" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="paket_id" data-placeholder="Pilih Paket">
                                 <option value="">Pilih...</option>
                                 @foreach ($pakets as $p)
                                     <option value="{{ $p->id }}">{{ $p->nama_paket }}</option>
@@ -210,7 +210,7 @@
                         </div>
                         <div>
                             <label for="paket_edit" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>
-                            <select id="paket_edit" name="paket"
+                            <select id="paket_edit" name="paket_id"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                 <option value="">Pilih Paket</option>
                                 @foreach ($pakets as $p)
@@ -280,7 +280,6 @@
             const id = button.dataset.id;
             const pelanggan = button.dataset.nama;
             const email = button.dataset.email;
-            const password = button.dataset.password;
             const alamat = button.dataset.alamat;
             const telepon = button.dataset.telepon;
             const paketValue = button.dataset.paket;
@@ -294,7 +293,6 @@
             document.getElementById('nama_edit').value = pelanggan;
             document.getElementById('alamat_edit').value = alamat;
             document.getElementById('email_edit').value = email;
-            document.getElementById('password_edit').value = password;
             document.getElementById('telepon_edit').value = telepon;
             console.log(paketValue);
             

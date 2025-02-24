@@ -17,7 +17,9 @@ return new class extends Migration
             $table->foreignId('paket_id'); 
             $table->string('alamat');
             $table->string('telepon');
+            $table->string('tanggal_langganan');
             $table->enum('status', ['aktif', 'nonaktif']);
+
             $table->timestamps();
         });
     }

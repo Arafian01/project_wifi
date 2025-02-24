@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
     
         try {
             $user = User::create([
-                'nama' => $request->nama, // Simpan nama di tabel pelanggan, bukan users
+                'nama' => $request->nama, 
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role' => 'pelanggan',

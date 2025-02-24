@@ -41,17 +41,34 @@ class PelangganController extends Controller
         return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
     }
 
-    public function update(Request $request, Pelanggan $pelanggan)
+    public function update(Request $request, String $id)
     {
-        $request->validate([
-            'user_id' => 'required',
-            'paket_id' => 'required',
-            'alamat' => 'required',
-            'telepon' => 'required',
-            'status' => 'required',
+        
+
+        $pelanggan = Pelanggan::findOrFail($id);
+        $pelanggan->update([
+            'paket_id' => $request->input('paket_id'),
+            'alamat' => $request->input('alamat'),
+            'telepon' => $request->input('telepon'),
+            'status' => $request->input('status'),
         ]);
-        $pelanggan->update($request->all());
-        return redirect()->route('page.pelanggan.index')->with('success', 'Pelanggan berhasil diupdate');
+
+        $user = User::where('id', $request->input('user_id'))->first();
+        
+        if($request->input('password') == ""){
+            $datapassword = $user->password;
+        } else {
+            $datapassword = $request->input('password');
+        };
+
+        $user->update([
+            'nama' => $request->input('nama'),
+            'email' => $request->input('email'),
+            'password' => $datapassword,
+        ]);
+
+        return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
+
     }
     public function destroy(Pelanggan $pelanggan)
     {
