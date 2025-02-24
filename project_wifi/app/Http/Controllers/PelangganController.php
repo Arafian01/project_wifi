@@ -14,7 +14,7 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::paginate(10);
         $pakets = Paket::all();
         $users = User::all();
-        return view('page.pelanggan.index') ->with([
+        return view('page.pelanggan.index')->with([
             'pelanggan' => $pelanggan,
             'pakets' => $pakets,
             'users' => $users,
@@ -23,15 +23,22 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required',
-            'paket_id' => 'required',
-            'alamat' => 'required',
-            'telepon' => 'required',
-            'status' => 'required',
+        $datauser = User::create([
+            'nama' => $request->input('nama'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+            'role' => 'pelanggan',
         ]);
-        Pelanggan::create($request->all());
-        return redirect()->route('page.pelanggan.index')->with('success', 'Pelanggan berhasil ditambahkan');
+
+        Pelanggan::create([
+            'user_id' => $datauser->id,
+            'paket_id' => $request->input('paket_id'),
+            'alamat' => $request->input('alamat'),
+            'telepon' => $request->input('telepon'),
+            'status' => $request->input('status'),
+        ]);
+
+        return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
     }
 
     public function update(Request $request, Pelanggan $pelanggan)

@@ -66,7 +66,7 @@ class RegisteredUserController extends Controller
     
             Auth::login($user);
     
-            return redirect()->route('dashboard');
+            return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan jika ada error
             return back()->withErrors(['error' => 'Terjadi kesalahan saat registrasi.']);

@@ -26,6 +26,7 @@ class PaketController extends Controller
 
         return back()->with('message_delete', 'Data Supplier Sudah dihapus');
     }
+    
     public function update(Request $request, string $id)
     {
         $data = [
