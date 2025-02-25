@@ -41,7 +41,9 @@
                                 <x-dropdown-link :href="route('role.index')" :class="request()->routeIs('role.index') ? 'text-red-500 font-bold' : ''">
                                     {{ __('Role') }}
                                 </x-dropdown-link>
-                                
+                                <x-dropdown-link :href="route('user.index')" :class="request()->routeIs('user.index') ? 'text-red-500 font-bold' : ''">
+                                    {{ __('User') }}
+                                </x-dropdown-link>
                             </x-slot>
                         </x-dropdown>
                     </li>
