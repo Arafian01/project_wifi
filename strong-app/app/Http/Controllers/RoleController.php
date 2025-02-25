@@ -36,7 +36,7 @@ class RoleController extends Controller
         return back()->with('message_delete', 'Data Supplier Sudah dihapus');
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $data = role::findOrFail($id);
         $data->delete();
