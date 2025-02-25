@@ -219,7 +219,7 @@
         status.classList.toggle('hidden');
     }
 
-    const roleDelete = async (id, name) => {
+    const userDelete = async (id, name) => {
             let tanya = confirm(`Apakah anda yakin untuk menghapus User ${name} ?`);
             if (tanya) {
                 await axios.post(`/user/${id}`, {

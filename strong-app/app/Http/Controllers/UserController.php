@@ -34,7 +34,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+            'role_id' => $request->input('role_id'),
+        ];
+
+        User::create($data);
+
+        return back()->with('message_delete', 'Data Supplier Sudah dihapus');
     }
 
     /**
@@ -83,6 +92,8 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = user::findOrFail($id);
+        $data->delete();
+        return back()->with('message_delete','Data Supplier Sudah dihapus');
     }
 }
