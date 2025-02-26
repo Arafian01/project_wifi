@@ -77,11 +77,17 @@
                                                 {{ $paket->perPage() * ($paket->currentPage() - 1) + $key + 1 }}
                                             </th>
                                             <td class="px-6 py-4">
-                                                {{ $p->nama }}
+                                                {{ $p->nama_paket }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $p->harga }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $p->deskripsi }}
                                             </td>
                                             <td class="px-6 py-4">
                                                 <button type="button" data-id="{{ $p->id }}"
-                                                    data-modal-target="sourceModal" data-nama="{{ $p->nama }}"
+                                                    data-modal-target="sourceModal" data-nama="{{ $p->nama_paket }}"
                                                     data-harga="{{ $p->harga }}"
                                                     data-deskripsi="{{ $p->deskripsi }}"
                                                     onclick="editSourceModal(this)"
