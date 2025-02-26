@@ -43,7 +43,7 @@ class PaketController extends Controller
     }
 
     public function destroy($id)
-    {
+    {   
         $data = paket::findOrFail($id);
         $data->delete();
         return back()->with('message_delete','Data Supplier Sudah dihapus');

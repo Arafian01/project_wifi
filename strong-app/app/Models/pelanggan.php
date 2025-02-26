@@ -14,6 +14,7 @@ class pelanggan extends Model
         'paket_id',
         'alamat',
         'telepon',
+        'tanggal_langganan',
         'status'
     ];
 
