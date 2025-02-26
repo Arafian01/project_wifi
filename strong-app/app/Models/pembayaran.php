@@ -12,7 +12,10 @@ class pembayaran extends Model
     protected $fillable = [
         'tagihan_id',
         'image',
-        'tanggal_kirim'
+        'tanggal_kirim',
+        'user_id',
+        'status_verifikasi',
+        'tanggal_verifikasi'
     ];
 
     protected $table = 'pembayarans';
@@ -22,9 +25,8 @@ class pembayaran extends Model
         return $this->belongsTo(tagihan::class);
     }
 
-    public function riwayat_pembayaran()
+    public function user()
     {
-        return $this->hasMany(riwayat_pembayaran::class);
+        return $this->belongsTo(user::class);
     }
-
 }

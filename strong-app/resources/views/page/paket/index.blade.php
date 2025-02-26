@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('User') }}
+            {{ __('Paket') }}
         </h2>
     </x-slot>
 
@@ -9,42 +9,33 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-4">
-                    <div>DATA USER</div>
+                    <div>DATA PAKET</div>
                 </div>
                 <div class="p-6 text-gray-900 dark:text-gray-100 flex gap-5">
                     {{-- FORM ADD SUPPLIER --}}
                     <div class="w-full bg-gray-100 p-4 rounded-xl">
                         <div class="mb-5">
-                            INPUT DATA USER
+                            INPUT DATA PAKET
                         </div>
-                        <form action="{{ route('user.store') }}" method="post">
+                        <form action="{{ route('paket.store') }}" method="post">
                             @csrf
                             <div class="mb-5">
-                                <label for="name"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                                <input name="name" type="text" id="name"
+                                <label for="nama"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Paket</label>
+                                <input name="nama" type="text" id="nama"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             </div>
                             <div class="mb-5">
-                                <label for="email"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                <input name="email" type="email" id="email"
+                                <label for="harga"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">harga Paket</label>
+                                <input name="harga" type="number" id="harga"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             </div>
                             <div class="mb-5">
-                                <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input name="password" type="text" id="password"
+                                <label for="deskripsi"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">deskripsi</label>
+                                <input name="deskripsi" type="text" id="deskripsi"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            </div>
-                            <div class="mb-5">
-                                <label for="role_id" class="block mb-2 text-sm font-medium text-gray-900">Role</label>
-                                <select class="js-example-placeholder-single js-states form-control w-full" name="role_id" data-placeholder="Pilih Paket">
-                                    <option value="">Pilih...</option>
-                                    @foreach ($role as $r)
-                                        <option value="{{ $r->id }}">{{ $r->nama }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                             <button type="submit"
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SIMPAN</button>
@@ -61,16 +52,16 @@
                                             NO
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            NAMA
+                                            NAMA PAKET
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            EMAIL
+                                            HARGA
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            ROLE
+                                            DESKRIPSI
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            
+
                                         </th>
                                     </tr>
                                 </thead>
@@ -78,33 +69,27 @@
                                     @php
                                         $no = 1;
                                     @endphp
-                                    @foreach ($user as $key => $u)
+                                    @foreach ($paket as $key => $p)
                                         <tr
                                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $user->perPage() * ($user->currentPage() - 1) + $key + 1 }}
+                                                {{ $paket->perPage() * ($paket->currentPage() - 1) + $key + 1 }}
                                             </th>
                                             <td class="px-6 py-4">
-                                                {{ $u->name }}
+                                                {{ $p->nama }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $u->email }}
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                {{ $u->role->nama }}
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <button type="button" data-id="{{ $u->id }}"
-                                                    data-modal-target="sourceModal" data-nama="{{ $u->name }}"
-                                                    data-email="{{ $u->email }}"
-                                                    data-role="{{ $u->role_id }}" 
+                                                <button type="button" data-id="{{ $p->id }}"
+                                                    data-modal-target="sourceModal" data-nama="{{ $p->nama }}"
+                                                    data-harga="{{ $p->harga }}"
+                                                    data-deskripsi="{{ $p->deskripsi }}"
                                                     onclick="editSourceModal(this)"
                                                     class="bg-amber-500 hover:bg-amber-600 px-3 py-1 rounded-md text-xs text-white">
                                                     Edit
                                                 </button>
                                                 <button
-                                                    onclick="return userDelete('{{ $u->id }}','{{ $u->name }}')"
+                                                    onclick="return paketDelete('{{ $p->id }}','{{ $p->nama }}')"
                                                     class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
                                             </td>
                                         </tr>
@@ -113,7 +98,7 @@
                             </table>
                         </div>
                         <div class="mt-4">
-                            {{ $user->links() }}
+                            {{ $paket->links() }}
                         </div>
                     </div>
                 </div>
@@ -138,31 +123,22 @@
                     @csrf
                     <div class="flex flex-col  p-4 space-y-6">
                         <div class="">
-                            <label for="name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                            <input name="name" type="text" id="name_edit"
+                            <label for="nama" class="block mb-2 text-sm font-medium text-gray-900">Nama Paket</label>
+                            <input type="text" id="nama_edit" name="nama"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Masukan Nama Paket...">
+                        </div>
+                        <div class="">
+                            <label for="harga"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">harga Paket</label>
+                            <input name="harga" type="number" id="harga_edit"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         </div>
                         <div class="">
-                            <label for="email"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input name="email" type="email" id="email_edit"
+                            <label for="deskripsi"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">deskripsi</label>
+                            <input name="deskripsi" type="text" id="deskripsi_edit"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                        <div class="">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
-                            <input name="password" type="text" id="password"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                        <div class="">
-                            <label for="role_id" class="block mb-2 text-sm font-medium text-gray-900">Role</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="role_id" data-placeholder="Pilih Paket" id="role_edit">
-                                <option value="">Pilih...</option>
-                                @foreach ($role as $r)
-                                    <option value="{{ $r->id }}">{{ $r->nama }}</option>
-                                @endforeach
-                            </select>
                         </div>
                     </div>
                     <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
@@ -181,21 +157,18 @@
         const formModal = document.getElementById('formSourceModal');
         const modalTarget = button.dataset.modalTarget;
         const id = button.dataset.id;
-        const name = button.dataset.nama;
-        const email = button.dataset.email;
-        const role = button.dataset.role
+        const nama = button.dataset.nama;
+        const harga = button.dataset.harga;
+        const deskripsi = button.dataset.deskripsi;
 
-        let url = "{{ route('user.update', ':id') }}".replace(':id', id);
+        let url = "{{ route('paket.update', ':id') }}".replace(':id', id);
 
         let status = document.getElementById(modalTarget);
-        document.getElementById('title_source').innerText = `Update User ${name}`;
+        document.getElementById('title_source').innerText = `Update paket ${nama}`;
 
-        document.getElementById('name_edit').value = name;
-        document.getElementById('email_edit').value = email;
-
-        let event = new Event('change');
-        document.getElementById('role_edit').value = role;
-        document.getElementById('role_edit').dispatchEvent(event);
+        document.getElementById('nama_edit').value = nama;
+        document.getElementById('harga_edit').value = harga;
+        document.getElementById('deskripsi_edit').value = deskripsi;
 
         document.getElementById('formSourceButton').innerText = 'Simpan';
         document.getElementById('formSourceModal').setAttribute('action', url);
@@ -219,10 +192,10 @@
         status.classList.toggle('hidden');
     }
 
-    const userDelete = async (id, name) => {
-            let tanya = confirm(`Apakah anda yakin untuk menghapus User ${name} ?`);
+    const paketDelete = async (id, nama) => {
+            let tanya = confirm(`Apakah anda yakin untuk menghapus paket ${nama} ?`);
             if (tanya) {
-                await axios.post(`/user/${id}`, {
+                await axios.post(`/paket/${id}`, {
                         '_method': 'DELETE',
                         '_token': $('meta[name="csrf-token"]').attr('content')
                     })

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -19,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('role', RoleController::class)->middleware('auth');
     Route::resource('user', UserController::class)->middleware('auth');
+    Route::resource('paket', PaketController::class)->middleware('auth');
 });
 
 require __DIR__.'/auth.php';
