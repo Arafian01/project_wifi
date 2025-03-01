@@ -47,9 +47,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
-    {
-        return $this->belongsTo(role::class);
+    public function statusBacas() {
+        return $this->hasMany(Status_baca::class);
     }
 
     public function pelanggan()

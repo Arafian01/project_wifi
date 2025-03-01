@@ -10,15 +10,13 @@ class notifikasi extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_role',
         'judul',
         'pesan',
     ];
 
     protected $table = 'notifikasis';
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
+    public function statusBacas() {
+        return $this->hasMany(Status_baca::class);
     }
 }
