@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paket;
 use App\Models\pelanggan;
+use App\Models\Pelanggan as ModelsPelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -40,5 +41,45 @@ class PelangganController extends Controller
         ]);
 
         return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
+    }
+    public function update(Request $request, String $id)
+    {
+        
+
+        $pelanggan = Pelanggan::findOrFail($id);
+        $pelanggan->update([
+            'paket_id' => $request->input('paket_id'),
+            'alamat' => $request->input('alamat'),
+            'telepon' => $request->input('telepon'),
+            'status' => $request->input('status'),
+            'tanggal_langganan' => $request->input('tanggal_langganan'),
+        ]);
+
+        $user = User::where('id', $pelanggan->user_id)->first();
+        
+        if($request->input('password') == ""){
+            $datapassword = $user->password;
+        } else {
+            $datapassword = $request->input('password');
+        };
+
+        $user->update([
+            'name' => $request->input('nama'),
+            'email' => $request->input('email'),
+            'password' => $datapassword,
+            'role' => 'pelanggan',
+
+        ]);
+
+        return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
+
+    }
+    public function destroy($id)
+    {
+        $data = pelanggan::findOrFail($id);
+        $datauser = User::findOrFail($data->user_id);
+        $datauser->delete();
+        $data->delete();
+        return back()->with('message_success', 'Pelanggan berhasil dihapus');
     }
 }

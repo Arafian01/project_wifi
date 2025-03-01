@@ -84,15 +84,17 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <button type="button" data-id="{{ $p->id }}"
-                                                data-modal-target="sourceModalEdit" data-nama="{{ $p->user_id }}"
-                                                data-alamat="{{ $p->alamat }}" data-telepon="{{ $p->telepon }}"
-                                                data-paket="{{ $p->paket_id }}" data-status="{{ $p->status }}"
-                                                data-tanggal-langganan="{{ $p->tanggal_langganan }}"  onclick="editSourceModal(this)"
+                                                data-modal-target="sourceModalEdit" data-nama="{{ $p->user->name }}"
+                                                data-email="{{ $p->user->email }}" data-alamat="{{ $p->alamat }}"
+                                                data-telepon="{{ $p->telepon }}" data-paket="{{ $p->paket_id }}"
+                                                data-status="{{ $p->status }}"
+                                                data-tanggal-langganan="{{ $p->tanggal_langganan }}"
+                                                onclick="editSourceModal(this)"
                                                 class="bg-amber-500 hover:bg-amber-600 px-3 py-1 rounded-md text-xs text-white">
                                                 Edit
                                             </button>
                                             <button
-                                                onclick="return konsumenDelete('{{ $p->id }}','{{ $p->nama }}')"
+                                                onclick="return konsumenDelete('{{ $p->id }}','{{ $p->user->name }}')"
                                                 class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
                                         </td>
                                     </tr>
@@ -141,7 +143,8 @@
                         </div>
                         <div>
                             <label for="paket_id" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="paket_id" data-placeholder="Pilih Paket">
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="paket_id"
+                                data-placeholder="Pilih Paket">
                                 <option value="">Pilih...</option>
                                 @foreach ($paket as $p)
                                     <option value="{{ $p->id }}">{{ $p->nama_paket }}</option>
@@ -161,14 +164,17 @@
                                 required />
                         </div>
                         <div>
-                            <label for="tanggal_langganan" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Langganan</label>
-                            <input type="date" id="tanggal_langganan" name="tanggal_langganan" value="{{ date('Y-m-d') }}"
+                            <label for="tanggal_langganan"
+                                class="block mb-2 text-sm font-medium text-gray-900">Tanggal Langganan</label>
+                            <input type="date" id="tanggal_langganan" name="tanggal_langganan"
+                                value="{{ date('Y-m-d') }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
                         </div>
                         <div>
                             <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="status" data-placeholder="Pilih Status">
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="status"
+                                data-placeholder="Pilih Status">
                                 <option value="">Pilih...</option>
                                 <option value="aktif">AKTIF</option>
                                 <option value="nonaktif">NONAKTIF</option>
@@ -185,7 +191,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
         <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
         <div class="fixed inset-0 flex items-center justify-center">
@@ -215,9 +221,17 @@
                                 required />
                         </div>
                         <div>
-                            <label for="password_edit" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+                            <label for="password_edit" class="block mb-2 text-sm font-medium text-gray-900">Password
+                                Baru</label>
                             <input type="text" id="password_edit" name="password"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                        </div>
+                        <div>
+                            <label for="password_confirmation"
+                                class="block mb-2 text-sm font-medium text-gray-900">Konfirmasi Password</label>
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
                         </div>
                         <div>
                             <label for="paket_edit" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>
@@ -230,19 +244,22 @@
                             </select>
                         </div>
                         <div>
-                            <label for="alamat_edit" class="block mb-2 text-sm font-medium text-gray-900">Alamat</label>
+                            <label for="alamat_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900">Alamat</label>
                             <input type="text" id="alamat_edit" name="alamat"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
                         </div>
                         <div>
-                            <label for="telepon_edit" class="block mb-2 text-sm font-medium text-gray-900">Telepon</label>
+                            <label for="telepon_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900">Telepon</label>
                             <input type="text" id="telepon_edit" name="telepon"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
                         </div>
                         <div>
-                            <label for="status_edit" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
+                            <label for="status_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900">Status</label>
                             <select id="status_edit" name="status"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                 <option value="">Pilih Status</option>
@@ -250,9 +267,18 @@
                                 <option value="nonaktif">Nonaktif</option>
                             </select>
                         </div>
+                        <div>
+                            <label for="tanggal_langganan"
+                                class="block mb-2 text-sm font-medium text-gray-900">Tanggal Langganan</label>
+                            <input type="date" id="tanggal_langganan" name="tanggal_langganan"
+                                value="{{ date('Y-m-d') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                        </div>
                     </div>
                     <div class="flex items-center p-4 border-t border-gray-200 rounded-b">
-                        <button type="submit" class="bg-green-500 text-white w-40 h-10 rounded-lg hover:bg-green-600">Simpan</button>
+                        <button type="submit"
+                            class="bg-green-500 text-white w-40 h-10 rounded-lg hover:bg-green-600">Simpan</button>
                         <button type="button" onclick="sourceModalClose()"
                             class="bg-red-500 text-white w-40 h-10 rounded-lg hover:bg-red-600 ml-2">Batal</button>
                     </div>
@@ -260,8 +286,17 @@
             </div>
         </div>
     </div>
-    
+
     <script>
+        document.getElementById("formSourceModalEdit").addEventListener("submit", function(event) {
+            const password = document.getElementById("password_edit").value;
+            const confirmPassword = document.getElementById("password_confirmation").value;
+
+            if (password !== confirmPassword) {
+                alert("Password baru dan konfirmasi password tidak sama!");
+                event.preventDefault(); // Mencegah form dikirim
+            }
+        });
         const functionAdd = () => {
             const formModal = document.getElementById('formSourceModal');
             const modal = document.getElementById('sourceModal');
@@ -306,7 +341,7 @@
             document.getElementById('email_edit').value = email;
             document.getElementById('telepon_edit').value = telepon;
             console.log(paketValue);
-            
+
             let event = new Event('change');
             document.getElementById('status_edit').value = statusValue;
             document.getElementById('status_edit').dispatchEvent(event);
@@ -341,10 +376,10 @@
             document.getElementById('sourceModal').classList.add('hidden');
         }
 
-        const konsumenDelete = async (id, konsumen) => {
-            let tanya = confirm(`Apakah anda yakin untuk menghapus Konsumen ${konsumen} ?`);
+        const konsumenDelete = async (id, name) => {
+            let tanya = confirm(`Apakah anda yakin untuk menghapus Pelanggan ${name} ?`);
             if (tanya) {
-                await axios.post(`/konsumen/${id}`, {
+                await axios.post(`/pelanggan/${id}`, {
                         '_method': 'DELETE',
                         '_token': $('meta[name="csrf-token"]').attr('content')
                     })
