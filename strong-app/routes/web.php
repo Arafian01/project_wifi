@@ -3,8 +3,10 @@
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class)->middleware('auth');
     Route::resource('paket', PaketController::class)->middleware('auth');
     Route::resource('pelanggan', PelangganController::class)->middleware('auth');
+    Route::resource('tagihan', TagihanController::class)->middleware('auth');
+    Route::resource('pembayaran', PembayaranController::class)->middleware('auth'); 
 
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
