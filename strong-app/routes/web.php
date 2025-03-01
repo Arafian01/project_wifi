@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\ProfileController;
@@ -19,10 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('role', RoleController::class)->middleware('auth');
     Route::resource('user', UserController::class)->middleware('auth');
     Route::resource('paket', PaketController::class)->middleware('auth');
     Route::resource('pelanggan', PelangganController::class)->middleware('auth');
+
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
+    Route::post('/notifikasi/baca/{id}', [NotifikasiController::class, 'baca'])->name('notifikasi.baca');
 });
 
 require __DIR__.'/auth.php';

@@ -1,5 +1,12 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
+    @php
+    use App\Models\Notifikasi;
+    use App\Models\Status_baca;
+
+    $user = Auth::user();
+    $notifikasiBaru = Notifikasi::whereNotIn('id', Status_baca::where('user_id', $user->id)->pluck('notifikasi_id'))->count();
+@endphp
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
@@ -38,9 +45,6 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                <x-dropdown-link :href="route('role.index')" :class="request()->routeIs('role.index') ? 'text-red-500 font-bold' : ''">
-                                    {{ __('Role') }}
-                                </x-dropdown-link>
                                 <x-dropdown-link :href="route('user.index')" :class="request()->routeIs('user.index') ? 'text-red-500 font-bold' : ''">
                                     {{ __('User') }}
                                 </x-dropdown-link>
@@ -88,6 +92,12 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+                    <a class="nav-link" href="{{ route('notifikasi.index') }}">
+                        🛎️
+                        @if ($notifikasiBaru > 0)
+                            <span class="badge bg-red">{{ $notifikasiBaru }}</span>
+                        @endif
+                    </a>
             </div>
 
             <!-- Hamburger -->

@@ -23,17 +23,22 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
-        $data = [
-            'user_id' => $request->input('user_id'),
+        $datauser = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+            'role' => 'pelanggan',
+        ]);
+
+        Pelanggan::create([
+            'user_id' => $datauser->id,
             'paket_id' => $request->input('paket_id'),
             'alamat' => $request->input('alamat'),
             'telepon' => $request->input('telepon'),
-            'tanggal_langganan' => $request->input('tanggal_langganan'),
             'status' => $request->input('status'),
-        ];
+            'tanggal_langganan' => $request->input('tanggal_langganan'),
+        ]);
 
-        pelanggan::create($data);
-
-        return back()->with('message_delete', 'Data Supplier Sudah dihapus');
+        return back()->with('message_success', 'Data Pelanggan Berhasil Ditambahkan');
     }
 }

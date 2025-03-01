@@ -122,13 +122,22 @@
                     @csrf
                     <div class="flex flex-col p-4 space-y-6">
                         <div>
-                            <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">User</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="user_id" data-placeholder="Pilih User">
-                                <option value="">Pilih...</option>
-                                @foreach ($user as $u)
-                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nama</label>
+                            <input type="text" id="name" name="name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
+                            <input type="email" id="email" name="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                        </div>
+                        <div>
+                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+                            <input type="password" id="password" name="password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
                         </div>
                         <div>
                             <label for="paket_id" class="block mb-2 text-sm font-medium text-gray-900">Paket</label>

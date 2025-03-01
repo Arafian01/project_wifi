@@ -14,10 +14,8 @@ class UserController extends Controller
     public function index()
     {
         $user = User::paginate(5);
-        $role = role::all();
         return view('page.user.index')->with([
             'user' => $user,
-            'role' => $role
         ]);
     }
 
@@ -38,7 +36,7 @@ class UserController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => $request->input('password'),
-            'role_id' => $request->input('role_id'),
+            'role' => $request->input('role'),
         ];
 
         User::create($data);
@@ -79,7 +77,7 @@ class UserController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => $password,
-            'role_id' => $request->input('role_id'),
+            'role' => $request->input('role'),
         ];
 
         $datas = User::findOrFail($id);
