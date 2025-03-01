@@ -9,6 +9,26 @@
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+        <!-- Alamat -->
+        <div class="mt-4">
+            <div>
+                <x-input-label for="alamat" :value="__('Alamat')" />
+                <x-text-input id="alamat" class="block mt-1 w-full" type="text" name="alamat" :value="old('alamat')"
+                    required autofocus />
+                <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+            </div>
+        </div>
+
+        <!-- No. HP -->
+        <div class="mt-4">
+            <div>
+                <x-input-label for="telepon" :value="__('No. HP')" />
+                <x-text-input id="telepon" class="block mt-1 w-full" type="number" name="telepon" :value="old('telepon')"
+                    required autofocus  />
+                <x-input-error :messages="$errors->get('telepon')" class="mt-2" />
+            </div>
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
@@ -37,6 +57,19 @@
                             name="password_confirmation" required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- Paket -->
+        <div class="mb-5 mt-4">
+            <label for="paket" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket</label>
+            <select class="js-example-placeholder-single js-states form-control w-full m-6 p-3" name="paket_id" id="paket"
+                data-placeholder="Pilih paket" >
+                <option value="">Pilih...</option>
+                @foreach ($paket as $p)
+                    <option value="{{ $p->id }}">
+                        {{ $p->nama_paket }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="flex items-center justify-end mt-4">
