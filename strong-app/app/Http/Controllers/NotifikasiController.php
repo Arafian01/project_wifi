@@ -38,4 +38,34 @@ class NotifikasiController extends Controller {
 
         return redirect()->route('notifikasi.index')->with('success', 'Notifikasi berhasil dibuat');
     }
+
+    public function edit($id)
+    {
+        $notifikasi = Notifikasi::findOrFail($id);
+        return response()->json($notifikasi);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'pesan' => 'required|string',
+        ]);
+
+        $notifikasi = Notifikasi::findOrFail($id);
+        $notifikasi->update([
+            'judul' => $request->judul,
+            'pesan' => $request->pesan,
+        ]);
+
+        return redirect()->route('notifikasi.index')->with('success', 'Notifikasi berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $notifikasi = Notifikasi::findOrFail($id);
+        $notifikasi->delete();
+
+        return redirect()->route('notifikasi.index')->with('success', 'Notifikasi berhasil dihapus!');
+    }
 }
