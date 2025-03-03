@@ -34,7 +34,7 @@ class PaketController extends Controller
         $data = [
             'nama_paket' => $request->input('nama'),
             'harga' => $request->input('harga'),
-            'deskripsi' => $request->input('deskripsi'),'nama' => $request->input('nama'),
+            'deskripsi' => $request->input('deskripsi'),
         ];
 
         $datas = paket::findOrFail($id);

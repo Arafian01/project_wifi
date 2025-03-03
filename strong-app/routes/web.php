@@ -26,11 +26,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('paket', PaketController::class)->middleware('auth');
     Route::resource('pelanggan', PelangganController::class)->middleware('auth');
     Route::resource('tagihan', TagihanController::class)->middleware('auth');
-    Route::resource('pembayaran', PembayaranController::class)->middleware('auth'); 
+    Route::resource('pembayaran', PembayaranController::class)->middleware('auth');
 
-    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
     Route::post('/notifikasi/baca/{id}', [NotifikasiController::class, 'baca'])->name('notifikasi.baca');
+    Route::put('/notifikasi/{id}', [NotifikasiController::class, 'update'])->name('notifikasi.update');
+    Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->name('notifikasi.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
