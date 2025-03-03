@@ -50,6 +50,7 @@ class RegisteredUserController extends Controller
                 'alamat' => $request->alamat,
                 'status' => 'nonaktif',
                 'tanggal_langganan' => now(),
+                'tanggal_nonaktif' => '',
             ]);
     
             DB::commit(); // Simpan data ke database

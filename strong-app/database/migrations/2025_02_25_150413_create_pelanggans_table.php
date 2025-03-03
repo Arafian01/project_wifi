@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('paket_id')->constrained()->onDelete('cascade'); 
-            $table->string('alamat');
+            $table->text('alamat');
             $table->string('telepon');
-            $table->string('tanggal_langganan');
-            $table->enum('status', ['aktif', 'nonaktif']);
+            $table->date('tanggal_langganan');
+            $table->enum('status', ['aktif', 'nonaktif','isolir']);
+            $table->date('tanggal_aktivasi')->nullable();
             $table->timestamps();
         });
     }
