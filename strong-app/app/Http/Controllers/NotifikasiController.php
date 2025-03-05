@@ -25,7 +25,11 @@ class NotifikasiController extends Controller {
             }
         }
 
-        return view('page.notifikasi.index', compact('notifikasis', 'dibaca'));
+        $isRead = \App\Models\status_baca::where('user_id', $user->id)
+            ->where('notifikasi_id', $notifikasi->id)
+            ->exists();
+
+        return view('page.notifikasi.index', compact('notifikasis', 'dibaca','isRead'));
     }
 
     public function store(Request $request) {
