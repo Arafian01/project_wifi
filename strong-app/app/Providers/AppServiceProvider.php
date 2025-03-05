@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             $schedule = app(Schedule::class);
-            $schedule->command('tagihan:generate')->monthlyOn(1, '00:00');
+            $schedule->command('tagihan:generate')->monthlyOn(5, '10:38');
         });
     }
 }

@@ -9,10 +9,10 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\GenerateTagihan::class,
-    ];
+    ];    
     
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('tagihan:generate')->monthlyOn(1, '00:00');
+        $schedule->command('tagihan:generate')->everyMinute();
     }
 }

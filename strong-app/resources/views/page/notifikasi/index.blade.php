@@ -7,9 +7,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="container bg-gray-100 p-4 rounded-lg shadow-md h-[70vh] overflow-y-auto">
+            <div class="container bg-gray-100 p-4 rounded-lg  ">
                 @foreach ($notifikasis as $notifikasi)
-                    <div class="flex items-start gap-2 mb-4">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="bg-white p-3 rounded-lg shadow-md max-w-lg w-full">
+                            <strong>{{ $notifikasi->judul }}</strong>
+                            <p class="text-gray-600">{{ $notifikasi->pesan }}</p>
+                        </div>
                         <div class="flex flex-col items-center">
                             <form action="{{ route('notifikasi.index', $notifikasi->id) }}" method="GET" class="mb-1">
                                 <button type="submit" class="text-blue-500 hover:text-blue-700">✏️</button>
@@ -20,10 +24,6 @@
                                 <button type="submit" class="text-red-500 hover:text-red-700">🗑️</button>
                             </form>
                         </div>
-                        <div class="bg-white p-3 rounded-lg shadow-md max-w-lg w-full">
-                            <strong>{{ $notifikasi->judul }}</strong>
-                            <p class="text-gray-600">{{ $notifikasi->pesan }}</p>
-                        </div>
                     </div>
                 @endforeach
             </div>
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Form Tambah Notifikasi (Fixed Bottom) -->
-    <div class="fixed bottom-0 left-0 w-full bg-white p-4 shadow-md border-t">
+    <div class=" bottom-0 left-0 w-full bg-white p-4 shadow-md border-t">
         <div class="max-w-7xl mx-auto">
             <form action="{{ route('notifikasi.store') }}" method="POST" class="bg-gray-100 p-4 rounded-lg shadow-md flex gap-2">
                 @csrf
