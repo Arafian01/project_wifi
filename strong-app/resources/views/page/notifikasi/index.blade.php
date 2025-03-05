@@ -5,7 +5,8 @@
                 {{ __('CHAT NOTIFIKASI') }}
             </h2>
             <!-- Tombol Tambah Pesan -->
-            <a href="#" onclick="return functionAdd()" class="bg-sky-600 p-2 hover:bg-sky-400 text-white rounded-xl">Add</a>
+            <a href="#" onclick="return functionAdd()"
+                class="bg-sky-600 p-2 hover:bg-sky-400 text-white rounded-xl">Add</a>
         </div>
     </x-slot>
 
@@ -21,7 +22,8 @@
 
                         <div class="flex justify-between items-center">
                             <!-- Tanggal Kirim -->
-                            <small class="block text-gray-500 mt-2">{{ $notifikasi->created_at->format('d M Y H:i') }}</small>
+                            <small
+                                class="block text-gray-500 mt-2">{{ $notifikasi->created_at->format('d M Y H:i') }}</small>
 
                             <!-- Status Baca -->
                             <div class="mt-1">
@@ -34,10 +36,12 @@
                         </div>
 
                         <!-- Hover Actions -->
-                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div
+                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="flex gap-2">
                                 <!-- Tombol Edit (Modal) -->
-                                <button onclick="openEditModal({{ $notifikasi->id }})" class="text-blue-500 hover:text-blue-700">
+                                <button onclick="openEditModal({{ $notifikasi->id }})"
+                                    class="text-blue-500 hover:text-blue-700">
                                     ✏️
                                 </button>
                                 <!-- Tombol Hapus -->
@@ -58,36 +62,6 @@
     </div>
 
     <!-- Modal Tambah Pesan -->
-    <div id="sourceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 class="text-xl font-semibold mb-4" id="modalTitle">Tambah Pesan</h2>
-            <form id="modalForm" action="{{ route('notifikasi.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="id" id="editId">
-                <div class="mb-4">
-                    <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
-                    <input type="text" name="judul" id="judul" placeholder="Judul"
-                        class="mt-1 p-2 border rounded-lg w-full" required>
-                </div>
-                <div class="mb-4">
-                    <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
-                    <textarea name="pesan" id="pesan" placeholder="Pesan"
-                        class="mt-1 p-2 border rounded-lg w-full"></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="sourceModalClose()"
-                        class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-                        Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModal">
         <div class="fixed inset-0 bg-black opacity-50"></div>
         <div class="fixed inset-0 flex items-center justify-center">
@@ -105,25 +79,63 @@
                 <form method="POST" id="formSourceModal">
                     @csrf
                     <div class="mb-4">
-                    <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
-                    <input type="text" name="judul" id="judul" placeholder="Judul"
-                        class="mt-1 p-2 border rounded-lg w-full" required>
-                </div>
-                <div class="mb-4">
-                    <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
-                    <textarea name="pesan" id="pesan" placeholder="Pesan"
-                        class="mt-1 p-2 border rounded-lg w-full"></textarea>
-                </div>
-                <div class="flex justify-end">
+                        <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
+                        <input type="text" name="judul" id="judul" placeholder="Judul"
+                            class="mt-1 p-2 border rounded-lg w-full" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
+                        <textarea name="pesan" id="pesan" placeholder="Pesan" class="mt-1 p-2 border rounded-lg w-full"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" onclick="sourceModalClose()"
+                            class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
+        <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 max-h-[80vh] overflow-y-auto">
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        Edit Pelanggan
+                    </h3>
                     <button type="button" onclick="sourceModalClose()"
-                        class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-                        Simpan
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+                <form method="POST" id="formSourceModalEdit">
+                    @csrf
+                        <div class="mb-4">
+                            <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
+                            <input type="text" name="judul" id="judul" placeholder="Judul"
+                                class="mt-1 p-2 border rounded-lg w-full" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
+                            <textarea name="pesan" id="pesan" placeholder="Pesan" class="mt-1 p-2 border rounded-lg w-full"></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="button" onclick="sourceModalClose()"
+                                class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+                                Simpan
+                            </button>
+                        </div>
                 </form>
             </div>
         </div>
@@ -153,7 +165,7 @@
                 formModal.appendChild(csrfToken);
             }
         }
-        
+
         const editSourceModal = (button) => {
             const formModal = document.getElementById('formSourceModalEdit');
             const modalTarget = button.dataset.modalTarget;
@@ -206,6 +218,7 @@
         }
 
         const sourceModalClose = () => {
+            document.getElementById('sourceModalEdit').classList.add('hidden');
             document.getElementById('sourceModal').classList.add('hidden');
         }
 
