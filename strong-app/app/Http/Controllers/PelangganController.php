@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Paket;
 use App\Models\pelanggan;
-use App\Models\Pelanggan as ModelsPelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
 
