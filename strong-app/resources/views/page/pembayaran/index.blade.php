@@ -61,25 +61,25 @@
                                             {{ $no++ }}
                                         </th>
                                         <td class="px-6 py-4">
-                                            {{ $p->user->name }}
+                                            {{ $p->tagihan->pelanggan->user->name }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $p->tagihan->bulan_tahun }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $p->paket->harga }}
+                                            {{ $p->tagihan->pelanggan->paket->harga }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $p->tanggal_kirim }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $p->status }}
+                                            {{ $p->status_verifikasi }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $p->tanggal_verifikasi }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $p->image }}
+                                            <img src="{{ $p->image }}" alt="">
                                         </td>
                                         <td class="px-6 py-4">
                                             <button type="button" data-id="{{ $p->id }}"
