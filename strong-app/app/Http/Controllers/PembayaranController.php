@@ -29,21 +29,16 @@ class PembayaranController extends Controller
 
     public function store(Request $request)
     {
-        $datauser = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')),
-            'role' => 'pembayaran',
-        ]);
+        $data = [
+            'user_id' => $request->input('user_id'),
+            'tagihan_id' => $request->input('tagihan_id'),
+            'image' => $request->input('image'),
+            'tanggal_kirim' => $request->input('tanggal_kirim'),
+            'status_verifikasi' => $request->input('status_verifikasi'),
+            'tanggal_verifikasi' => $request->input('tanggal_verifikasi'),
+        ];
 
-        pembayaran::create([
-            'user_id' => $datauser->id,
-            'paket_id' => $request->input('paket_id'),
-            'alamat' => $request->input('alamat'),
-            'telepon' => $request->input('telepon'),
-            'status' => $request->input('status'),
-            'tanggal_langganan' => $request->input('tanggal_langganan'),
-        ]);
+        pembayaran::create($data);
 
         return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
     }

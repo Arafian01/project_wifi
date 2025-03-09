@@ -143,7 +143,7 @@
                                     </label>
                         
                                     <!-- Hidden Input -->
-                                    <input type="file" id="image-input" class="hidden" accept="image/*">
+                                    <input type="file" id="image-input" class="hidden" accept="image/*" name="image">
                                 </div>
                             </div>
                         </div>
@@ -181,8 +181,8 @@
                             <select class="js-example-placeholder-single js-states form-control w-full" name="status_verifikasi"
                                 data-placeholder="Pilih Status Verifikasi">
                                 <option value="">Pilih...</option>
-                                <option value="aktif">AKTIF</option>
-                                <option value="nonaktif">NONAKTIF</option>
+                                <option value="diterima">DITERIMA</option>
+                                <option value="ditolak">DITOLAK</option>
                             </select>
                         </div>
                         <div>
@@ -199,6 +199,71 @@
                             class="bg-green-400 m-2 w-40 h-10 rounded-xl hover:bg-green-500">Simpan</button>
                         <button type="button" onclick="sourceModalClose()"
                             class="bg-red-500 m-2 w-40 h-10 rounded-xl text-white hover:shadow-lg hover:bg-red-600">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
+        <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 max-h-[80vh] overflow-y-auto">
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        Edit Pelanggan
+                    </h3>
+                    <button type="button" onclick="sourceModalClose()"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <form method="POST" id="formSourceModalEdit">
+                    @csrf
+                    <div class="flex flex-col p-4 space-y-6">
+                        <div>
+                            <label for="pelanggan_id_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900">Pelanggan</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full" id="pelanggan_id_edit"
+                                name="pelanggan_id" data-placeholder="Pilih Pelanggan">
+                                <option value="">Pilih...</option>
+                                @foreach ($pelanggan as $p)
+                                    <option value="{{ $p->id }}">{{ $p->user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="bulan_tahun_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bulan
+                                Tahun</label>
+                            <input name="bulan_tahun" type="month" id="bulan_tahun_edit"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="status_pembayaran_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                Pembayaran</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full m-6" id="status_pembayaran_edit"
+                                name="status_pembayaran" data-placeholder="Pilih Status Pembayaran">
+                                <option value="">Pilih...</option>
+                                <option value="belum_dibayar">Belum Dibayar</option>
+                                <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+                                <option value="lunas">Lunas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="jatuh_tempo_edit"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jatuh
+                                Tempo</label>
+                            <input name="jatuh_tempo" type="date" id="jatuh_tempo_edit"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b">
+                        <button type="submit"
+                            class="bg-green-500 text-white w-40 h-10 rounded-lg hover:bg-green-600">Simpan</button>
+                        <button type="button" onclick="sourceModalClose()"
+                            class="bg-red-500 text-white w-40 h-10 rounded-lg hover:bg-red-600 ml-2">Batal</button>
                     </div>
                 </form>
             </div>
