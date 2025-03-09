@@ -8,6 +8,7 @@ use App\Models\pembayaran;
 use App\Models\tagihan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
@@ -30,7 +31,7 @@ class PembayaranController extends Controller
     public function store(Request $request)
     {
         $data = [
-            'user_id' => $request->input('user_id'),
+            'user_id' => Auth::user()->id,
             'tagihan_id' => $request->input('tagihan_id'),
             'image' => $request->input('image'),
             'tanggal_kirim' => $request->input('tanggal_kirim'),

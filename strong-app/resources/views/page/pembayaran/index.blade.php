@@ -148,17 +148,6 @@
                             </div>
                         </div>
                         <div>
-                            <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">Pealnggan</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" name="user_id"
-                                data-placeholder="Pilih Pelanggan">
-                                <option value="">Pilih...</option>
-                                @foreach ($user as $u)
-                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
                             <label for="tagihan_id" class="block mb-2 text-sm font-medium text-gray-900">Tagihan</label>
                             <select class="js-example-placeholder-single js-states form-control w-full" name="tagihan_id"
                                 data-placeholder="Pilih Tagihan">
