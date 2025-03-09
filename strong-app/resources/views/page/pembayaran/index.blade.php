@@ -109,4 +109,147 @@
         </div>
     </div>
     
+    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModal">
+        <div class="fixed inset-0 bg-black opacity-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 overflow-y-auto max-h-[90vh]">
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900" id="title_source">
+                        Tambah Pembayaran
+                    </h3>
+                    <button type="button" onclick="sourceModalClose()" data-modal-target="sourceModal"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                        data-modal-hide="defaultModal">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <form method="POST" id="formSourceModal">
+                    @csrf
+                    <div class="flex flex-col p-4 space-y-6">
+                        <div class=" flex items-center justify-center ">
+                            <div class="bg-white p-6 rounded-full shadow-lg">
+                                <div class="relative w-64 h-64">
+                                    <!-- Image Preview -->
+                                    <div id="image-preview" class="w-full h-full bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
+                                        <span class="text-gray-500">No image selected</span>
+                                    </div>
+                        
+                                    <!-- Camera Button -->
+                                    <label for="image-input" class="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-lg cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </label>
+                        
+                                    <!-- Hidden Input -->
+                                    <input type="file" id="image-input" class="hidden" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">Pealnggan</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="user_id"
+                                data-placeholder="Pilih Pelanggan">
+                                <option value="">Pilih...</option>
+                                @foreach ($user as $u)
+                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="tagihan_id" class="block mb-2 text-sm font-medium text-gray-900">Tagihan</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="tagihan_id"
+                                data-placeholder="Pilih Tagihan">
+                                <option value="">Pilih...</option>
+                                @foreach ($tagihan as $t)
+                                    <option value="{{ $t->id }}">{{ $t->bulan_tahun }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tanggal_kirim"
+                                class="block mb-2 text-sm font-medium text-gray-900">Tanggal Kirim</label>
+                            <input type="date" id="tanggal_kirim" name="tanggal_kirim"
+                                value="{{ date('Y-m-d') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                        </div>
+                        <div>
+                            <label for="status_verifikasi" class="block mb-2 text-sm font-medium text-gray-900">Status Verifikasi</label>
+                            <select class="js-example-placeholder-single js-states form-control w-full" name="status_verifikasi"
+                                data-placeholder="Pilih Status Verifikasi">
+                                <option value="">Pilih...</option>
+                                <option value="aktif">AKTIF</option>
+                                <option value="nonaktif">NONAKTIF</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tanggal_verifikasi"
+                                class="block mb-2 text-sm font-medium text-gray-900">Tanggal Verifikasi</label>
+                            <input type="date" id="tanggal_verifikasi" name="tanggal_verifikasi"
+                                value="{{ date('Y-m-d') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
+                        <button type="submit" id="formSourceButton"
+                            class="bg-green-400 m-2 w-40 h-10 rounded-xl hover:bg-green-500">Simpan</button>
+                        <button type="button" onclick="sourceModalClose()"
+                            class="bg-red-500 m-2 w-40 h-10 rounded-xl text-white hover:shadow-lg hover:bg-red-600">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle image preview
+        const imageInput = document.getElementById('image-input');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '<span class="text-gray-500">No image selected</span>';
+            }
+        });
+
+        const functionAdd = () => {
+            const formModal = document.getElementById('formSourceModal');
+            const modal = document.getElementById('sourceModal');
+
+            // Set form action URL
+            let url = "{{ route('pembayaran.store') }}";
+            document.getElementById('title_source').innerText = "Add pembayaran";
+            formModal.setAttribute('action', url);
+
+            // Display the modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Ensure CSRF token is added once
+            if (!formModal.querySelector('input[name="_token"]')) {
+                let csrfToken = document.createElement('input');
+                csrfToken.setAttribute('type', 'hidden');
+                csrfToken.setAttribute('name', '_token');
+                csrfToken.setAttribute('value', '{{ csrf_token() }}');
+                formModal.appendChild(csrfToken);
+            }
+        }
+
+        const sourceModalClose = () => {
+            document.getElementById('sourceModalEdit').classList.add('hidden');
+            document.getElementById('sourceModal').classList.add('hidden');
+        }
+
+    </script>
 </x-app-layout>
