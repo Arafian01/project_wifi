@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\PelangganController;
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifikasi/baca/{id}', [NotifikasiController::class, 'baca'])->name('notifikasi.baca');
     Route::put('/notifikasi/{id}', [NotifikasiController::class, 'update'])->name('notifikasi.update');
     Route::delete('/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->name('notifikasi.destroy');
+    Route::resource('error', ErrorController::class);
 });
 
 require __DIR__ . '/auth.php';
