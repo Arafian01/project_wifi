@@ -9,10 +9,16 @@ class PaketController extends Controller
 {
     public function index()
     {
-        $paket = paket::paginate(5);
-        return view('page.paket.index')->with([
-            'paket' => $paket
-        ]);
+        try {
+            $paket = paket::paginate(5);
+            return view('page.pakett.index')->with([
+                'paket' => $paket
+            ]);
+        }catch(\Exception $e){
+            echo "<script>console.error('PHP Error: " . addslashes($e->getMessage()) . "');</script>";
+            return view('error.index');
+        }
+        
     }
 
     public function store(Request $request)
