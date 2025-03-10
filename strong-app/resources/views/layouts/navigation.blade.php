@@ -125,6 +125,18 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('paket.index')" :active="request()->routeIs('paket.index')">
+                {{ __('Paket') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pelanggan.index')" :active="request()->routeIs('pelanggan.index')">
+                {{ __('Pelanggan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('tagihan.index')" :active="request()->routeIs('tagihan.index')">
+                {{ __('Tagihan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pembayaran.index')" :active="request()->routeIs('pembayaran.index')">
+                {{ __('Pembayaran') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

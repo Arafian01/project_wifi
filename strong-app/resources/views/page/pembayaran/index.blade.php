@@ -127,10 +127,10 @@
                     @csrf
                     <div class="flex flex-col p-4 space-y-6">
                         <div class=" flex items-center justify-center ">
-                            <div class="bg-white p-6 rounded-full shadow-lg">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
                                 <div class="relative w-64 h-64">
                                     <!-- Image Preview -->
-                                    <div id="image-preview" class="w-full h-full bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
+                                    <div id="image-preview" class="w-full h-full bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
                                         <span class="text-gray-500">No image selected</span>
                                     </div>
                         
