@@ -67,7 +67,7 @@
                                             {{ $p->tagihan->bulan_tahun }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $p->tagihan->pelanggan->paket->harga }}
+                                            {{ $harga }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $p->tanggal_kirim }}
@@ -260,6 +260,8 @@
     </div>
 
     <script>
+        $harga = $pelanggan->tagihan->pelanggan->paket->harga
+
         // JavaScript to handle image preview
         const imageInput = document.getElementById('image-input');
         const imagePreview = document.getElementById('image-preview');

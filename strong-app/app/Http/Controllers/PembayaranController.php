@@ -19,12 +19,13 @@ class PembayaranController extends Controller
         $paket = Paket::all();
         $pelanggan = Pelanggan::all();
         $tagihan = tagihan::all();
+
         return view('page.pembayaran.index')->with([
             'user' => $user,
             'pembayaran' => $pembayaran,
             'paket' => $paket,
             'pelanggan' => $pelanggan,
-            'tagihan' => $tagihan
+            'tagihan' => $tagihan,
         ]);
     }
 
