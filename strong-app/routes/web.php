@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\LoginAPIController;
 use App\Http\Controllers\ErrorController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PaketController;
