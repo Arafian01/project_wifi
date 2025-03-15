@@ -53,7 +53,7 @@ class PaketController extends Controller
             $datas = paket::findOrFail($id);
             $datas->update($data);
             return redirect()
-            ->route('paket.index')->with('message_insert', 'Data Paket Sudah ditambahkan ');
+            ->route('paket.index')->with('message_insert', 'Data Paket Berhasil diPerbarui ');
         } catch (\Exception $e) {
             return redirect()
             ->route('paket.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
@@ -65,7 +65,7 @@ class PaketController extends Controller
         try {
             $data = paket::findOrFail($id);
             $data->delete();
-            return back()->with('message_delete', 'Data Paket Sudah ditambahkan ');
+            return back()->with('message_delete', 'Data Paket Berhasil DiHapus ');
         } catch(\Exception $e){
             return back()->with('error_mesaage', 'Terjadi kesalahan saat melakukan delete data: ' . $e->getMessage());
         }
