@@ -17,9 +17,8 @@ return new class extends Migration
             $table->foreignId('paket_id')->constrained()->onDelete('cascade'); 
             $table->text('alamat');
             $table->string('telepon');
-            $table->date('tanggal_langganan');
             $table->enum('status', ['aktif', 'nonaktif','isolir']);
-            $table->date('tanggal_aktivasi')->nullable();
+            $table->date('tanggal_aktif')->nullable();
             $table->timestamps();
         });
     }
