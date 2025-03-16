@@ -12,17 +12,32 @@ class PelangganController extends Controller
     public function index()
     {
         try {
-            $pelanggan = pelanggan::paginate(5);
-            $user = User::all();
-            $paket = Paket::all();
-            return view('page.pelanggan.index')->with([
-                'user' => $user,
+            $search = request('search');
+            $entries = request('entries', 10);
+
+            $pelanggan = Pelanggan::with(['user', 'paket'])
+                ->when($search, function($query) use ($search) {
+                    $query->where(function($q) use ($search) {
+                        $q->whereHas('user', function($subQuery) use ($search) {
+                            $subQuery->where('name', 'like', "%$search%")
+                                   ->orWhere('email', 'like', "%$search%");
+                        })
+                        ->orWhere('alamat', 'like', "%$search%")
+                        ->orWhere('telepon', 'like', "%$search%")
+                        ->orWhere('status', 'like', "%$search%");
+                    });
+                })
+                ->paginate($entries);
+
+            return view('page.pelanggan.index', [
                 'pelanggan' => $pelanggan,
-                'paket' => $paket
+                'paket' => Paket::all(),
+                'search' => $search,
+                'entries' => $entries
             ]);
-        } catch (\Exception $e) {
-            echo "<script>console.error('PHP Error: " . addslashes($e->getMessage()) . "');</script>";
-            return view('error.index');
+            
+        } catch(\Exception $e) {
+            return redirect()->route('pelanggan.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
     }
 
