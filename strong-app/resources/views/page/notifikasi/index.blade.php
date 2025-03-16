@@ -1,58 +1,112 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('CHAT NOTIFIKASI') }}
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-gray-800">
+                <span class="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+                    Manajemen Notifikasi
+                </span>
             </h2>
-            <!-- Tombol Tambah Pesan -->
-            <a href="#" onclick="return functionAdd()"
-                class="bg-sky-600 p-2 hover:bg-sky-400 text-white rounded-xl">Add</a>
+            @can('role-admin')
+                <button onclick="toggleModal('createModal')"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Buat Notifikasi
+                </button>
+            @endcan
         </div>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Daftar Pesan -->
+    <div class="py-6 px-4 sm:px-6 lg:px-8">
+        <!-- SweetAlert Notifications -->
+        @if (Session::has('message_insert'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ Session::get('message_insert') }}',
+                    timer: 3000
+                })
+            </script>
+        @endif
+
+        @if (Session::has('message_delete'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terhapus!',
+                    text: '{{ Session::get('message_delete') }}',
+                    timer: 3000
+                })
+            </script>
+        @endif
+
+        @if (Session::has('error_message') || Session::has('error_mesaage'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ Session::get('error_message') ?? Session::get('error_mesaage') }}'
+                })
+            </script>
+        @endif
+
+        <!-- Daftar Notifikasi -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach ($notifikasis as $notifikasi)
-                    <div class="bg-white p-6 rounded-lg shadow-md relative group">
-                        <!-- Judul dan Pesan -->
-                        <strong class="block text-lg font-medium text-gray-800">{{ $notifikasi->judul }}</strong>
-                        <p class="text-gray-600 mt-1">{{ $notifikasi->pesan }}</p>
-
-                        <div class="flex justify-between items-center">
-                            <!-- Tanggal Kirim -->
-                            <small
-                                class="block text-gray-500 mt-2">{{ $notifikasi->created_at->format('d M Y H:i') }}</small>
-
-                            <!-- Status Baca -->
-                            <div class="mt-1">
-                                @if ($isRead)
-                                    <span class="text-green-500">✔️ Dibaca</span>
-                                @else
-                                    <span class="text-red-500">❌ Belum Dibaca</span>
-                                @endif
-                            </div>
+                    <div
+                        class="bg-gradient-to-br from-white to-red-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow relative group border border-red-100">
+                        <!-- Badge Status -->
+                        <div class="absolute top-3 right-3">
+                            <span
+                                class="px-3 py-1 rounded-full text-sm {{ in_array($notifikasi->id, $dibaca) ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
+                                {{ in_array($notifikasi->id, $dibaca) ? '✓ Dibaca' : '✗ Belum Dibaca' }}
+                            </span>
                         </div>
 
-                        <!-- Hover Actions -->
-                        <div
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="flex gap-2">
-                                <!-- Tombol Edit (Modal) -->
-                                <button onclick="openEditModal({{ $notifikasi->id }})"
-                                    class="text-blue-500 hover:text-blue-700">
-                                    ✏️
-                                </button>
-                                <!-- Tombol Hapus -->
-                                <form action="{{ route('notifikasi.destroy', $notifikasi->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus?');" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700">
-                                        🗑️
-                                    </button>
-                                </form>
+                        <!-- Konten -->
+                        <div class="space-y-3">
+                            <h3 class="text-xl font-semibold text-red-600">{{ $notifikasi->judul }}</h3>
+                            <p class="text-gray-600 leading-relaxed">{{ $notifikasi->pesan }}</p>
+
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>{{ $notifikasi->created_at->format('d M Y, H:i') }}</span>
+                                </div>
+                                @can('role-admin')
+                                    <!-- Actions -->
+                                    <div
+                                        class="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onclick="openEditModal({{ $notifikasi }})"
+                                            class="text-red-600 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+
+                                        <form id="deleteForm-{{ $notifikasi->id }}"
+                                            action="{{ route('notifikasi.destroy', $notifikasi->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                onclick="confirmDelete({{ $notifikasi->id }}, '{{ $notifikasi->judul }}')"
+                                                class="text-red-600 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -61,40 +115,44 @@
         </div>
     </div>
 
-    <!-- Modal Tambah Pesan -->
-    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModal">
-        <div class="fixed inset-0 bg-black opacity-50"></div>
-        <div class="fixed inset-0 flex items-center justify-center">
-            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 overflow-y-auto max-h-[90vh]">
-                <div class="flex items-start justify-between p-4 border-b rounded-t">
-                    <h3 class="text-xl font-semibold text-gray-900" id="title_source">
-                        Tambah Pelanggan
-                    </h3>
-                    <button type="button" onclick="sourceModalClose()" data-modal-target="sourceModal"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-                        data-modal-hide="defaultModal">
-                        <i class="fa-solid fa-xmark"></i>
+    <!-- Create Modal -->
+    <div id="createModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl flex flex-col">
+                <div class="p-6 border-b flex justify-between items-center bg-red-50 rounded-t-2xl">
+                    <h3 class="text-xl font-bold text-red-600">Buat Notifikasi Baru</h3>
+                    <button onclick="toggleModal('createModal')"
+                        class="text-red-500 hover:text-red-700 text-2xl p-2 transition-transform hover:rotate-90">
+                        ✕
                     </button>
                 </div>
-                <form method="POST" id="formSourceModal">
+                <form action="{{ route('notifikasi.store') }}" method="POST" class="flex-1 flex flex-col">
                     @csrf
-                    <div class="mb-4">
-                        <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
-                        <input type="text" name="judul" id="judul" placeholder="Judul"
-                            class="mt-1 p-2 border rounded-lg w-full" required>
+                    <div class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Judul <span class="text-red-500">*</span>
+                                <input type="text" name="judul" required placeholder="Judul Notifikasi"
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500">
+                            </label>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Pesan <span class="text-red-500">*</span>
+                                <textarea name="pesan" rows="4" required placeholder="Isi pesan notifikasi"
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500"></textarea>
+                            </label>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
-                        <textarea name="pesan" id="pesan" placeholder="Pesan" class="mt-1 p-2 border rounded-lg w-full"></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" onclick="sourceModalClose()"
-                            class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
+                    <div class="p-6 border-t bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                        <button type="button" onclick="toggleModal('createModal')"
+                            class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                             Batal
                         </button>
                         <button type="submit"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-                            Simpan
+                            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            Simpan Notifikasi
                         </button>
                     </div>
                 </form>
@@ -102,143 +160,84 @@
         </div>
     </div>
 
-    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
-        <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
-        <div class="fixed inset-0 flex items-center justify-center">
-            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 max-h-[80vh] overflow-y-auto">
-                <div class="flex items-start justify-between p-4 border-b rounded-t">
-                    <h3 class="text-xl font-semibold text-gray-900">
-                        Edit Pelanggan
-                    </h3>
-                    <button type="button" onclick="sourceModalClose()"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
-                        <i class="fa-solid fa-xmark"></i>
+    <!-- Edit Modal -->
+    <div id="editModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl flex flex-col">
+                <div class="p-6 border-b flex justify-between items-center bg-red-50 rounded-t-2xl">
+                    <h3 class="text-xl font-bold text-red-600">Edit Notifikasi</h3>
+                    <button onclick="toggleModal('editModal')"
+                        class="text-red-500 hover:text-red-700 text-2xl p-2 transition-transform hover:rotate-90">
+                        ✕
                     </button>
                 </div>
-                <form method="POST" id="formSourceModalEdit">
+                <form method="POST" id="editForm" class="flex-1 flex flex-col">
                     @csrf
-                        <div class="mb-4">
-                            <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
-                            <input type="text" name="judul" id="judul" placeholder="Judul"
-                                class="mt-1 p-2 border rounded-lg w-full" required>
+                    @method('PUT')
+                    <div class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Judul <span class="text-red-500">*</span>
+                                <input type="text" id="edit_judul" name="judul" required
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500">
+                            </label>
                         </div>
-                        <div class="mb-4">
-                            <label for="pesan" class="block text-sm font-medium text-gray-700">Pesan</label>
-                            <textarea name="pesan" id="pesan" placeholder="Pesan" class="mt-1 p-2 border rounded-lg w-full"></textarea>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Pesan <span class="text-red-500">*</span>
+                                <textarea id="edit_pesan" name="pesan" rows="4" required
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500"></textarea>
+                            </label>
                         </div>
-                        <div class="flex justify-end">
-                            <button type="button" onclick="sourceModalClose()"
-                                class="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-                                Simpan
-                            </button>
-                        </div>
+                    </div>
+                    <div class="p-6 border-t bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                        <button type="button" onclick="toggleModal('editModal')"
+                            class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            Simpan Perubahan
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Script untuk Mengontrol Modal -->
     <script>
-        const functionAdd = () => {
-            const formModal = document.getElementById('formSourceModal');
-            const modal = document.getElementById('sourceModal');
-
-            // Set form action URL
-            let url = "{{ route('pelanggan.store') }}";
-            document.getElementById('title_source').innerText = "Add pelanggan";
-            formModal.setAttribute('action', url);
-
-            // Display the modal
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            // Ensure CSRF token is added once
-            if (!formModal.querySelector('input[name="_token"]')) {
-                let csrfToken = document.createElement('input');
-                csrfToken.setAttribute('type', 'hidden');
-                csrfToken.setAttribute('name', '_token');
-                csrfToken.setAttribute('value', '{{ csrf_token() }}');
-                formModal.appendChild(csrfToken);
-            }
+        // Toggle Modal
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
         }
 
-        const editSourceModal = (button) => {
-            const formModal = document.getElementById('formSourceModalEdit');
-            const modalTarget = button.dataset.modalTarget;
-            const id = button.dataset.id;
-            const pelanggan = button.dataset.nama;
-            const email = button.dataset.email;
-            const alamat = button.dataset.alamat;
-            const telepon = button.dataset.telepon;
-            const paketValue = button.dataset.paket;
-            const statusValue = button.dataset.status;
+        // Open Edit Modal
+        function openEditModal(notifikasi) {
+            document.getElementById('edit_judul').value = notifikasi.judul;
+            document.getElementById('edit_pesan').value = notifikasi.pesan;
 
-            let url = "{{ route('pelanggan.update', ':id') }}".replace(':id', id);
-
-            console.log(url);
-            document.getElementById('title_source').innerText = `Update pelanggan ${pelanggan}`;
-
-            document.getElementById('nama_edit').value = pelanggan;
-            document.getElementById('alamat_edit').value = alamat;
-            document.getElementById('email_edit').value = email;
-            document.getElementById('telepon_edit').value = telepon;
-            console.log(paketValue);
-
-            let event = new Event('change');
-            document.getElementById('status_edit').value = statusValue;
-            document.getElementById('status_edit').dispatchEvent(event);
-
-            document.getElementById('paket_edit').value = paketValue;
-            document.getElementById('paket_edit').dispatchEvent(event);
-
-
-            formModal.setAttribute('action', url);
-
-            if (!formModal.querySelector('input[name="_token"]')) {
-                let csrfToken = document.createElement('input');
-                csrfToken.setAttribute('type', 'hidden');
-                csrfToken.setAttribute('name', '_token');
-                csrfToken.setAttribute('value', '{{ csrf_token() }}');
-                formModal.appendChild(csrfToken);
-            }
-
-            if (!formModal.querySelector('input[name="_method"]')) {
-                let methodInput = document.createElement('input');
-                methodInput.setAttribute('type', 'hidden');
-                methodInput.setAttribute('name', '_method');
-                methodInput.setAttribute('value', 'PATCH');
-                formModal.appendChild(methodInput);
-            }
-
-            document.getElementById(modalTarget).classList.remove('hidden');
+            const form = document.getElementById('editForm');
+            form.action = `/notifikasi/${notifikasi.id}`;
+            toggleModal('editModal');
         }
 
-        const sourceModalClose = () => {
-            document.getElementById('sourceModalEdit').classList.add('hidden');
-            document.getElementById('sourceModal').classList.add('hidden');
-        }
-
-        const konsumenDelete = async (id, name) => {
-            let tanya = confirm(`Apakah anda yakin untuk menghapus Pelanggan ${name} ?`);
-            if (tanya) {
-                await axios.post(`/pelanggan/${id}`, {
-                        '_method': 'DELETE',
-                        '_token': $('meta[name="csrf-token"]').attr('content')
-                    })
-                    .then(function(response) {
-                        // Handle success
-                        location.reload();
-                    })
-                    .catch(function(error) {
-                        // Handle error
-                        alert('Error deleting record');
-                        console.log(error);
-                    });
-            }
+        // Delete Confirmation
+        function confirmDelete(id, title) {
+            Swal.fire({
+                title: `Hapus ${title}?`,
+                text: "Anda tidak akan bisa mengembalikan data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`deleteForm-${id}`).submit();
+                }
+            });
         }
     </script>
 </x-app-layout>
