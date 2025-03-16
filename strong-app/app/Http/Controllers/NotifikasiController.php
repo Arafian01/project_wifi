@@ -57,7 +57,10 @@ class NotifikasiController extends Controller
         };
     }
 
-    public function edit($id) {}
+    public function edit() 
+    {
+
+    }
 
     public function update(Request $request, $id)
     {
