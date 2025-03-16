@@ -10,13 +10,25 @@ class PaketController extends Controller
     public function index()
     {
         try {
-            $paket = paket::paginate(5);
-            return view('page.paket.index')->with([
-                'paket' => $paket
+            $search = request('search');
+            $entries = request('entries', 10);
+    
+            $paket = Paket::when($search, function($query) use ($search) {
+                $query->where('nama_paket', 'like', "%$search%")
+                      ->orWhere('deskripsi', 'like', "%$search%")
+                      ->orWhere('harga', 'like', "%$search%");
+            })
+            ->paginate($entries)
+            ->withQueryString();
+    
+            return view('page.paket.index', [
+                'paket' => $paket,
+                'search' => $search,
+                'entries' => $entries
             ]);
-        }catch(\Exception $e){
-            echo "<script>console.error('PHP Error: " . addslashes($e->getMessage()) . "');</script>";
-            return view('error.index');
+            
+        } catch(\Exception $e) {
+            return redirect()->route('paket.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
         
     }
