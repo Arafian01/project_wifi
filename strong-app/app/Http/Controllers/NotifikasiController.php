@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notifikasi;
 use App\Models\Status_baca;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,9 +17,11 @@ class NotifikasiController extends Controller
             $notifikasis = Notifikasi::latest()->get();
 
             // Ambil ID notifikasi yang sudah dibaca oleh user
-            $dibaca = Status_baca::where('user_id', $user->id)->pluck('notifikasi_id')->toArray();
+            $dibaca = Status_baca::where('user_id', $user->id)
+                ->pluck('notifikasi_id')
+                ->toArray();
 
-            // Tandai semua notifikasi sebagai terbaca jika belum ada di status baca
+            // Tandai sebagai terbaca jika belum ada di status baca
             foreach ($notifikasis as $notifikasi) {
                 if (!in_array($notifikasi->id, $dibaca)) {
                     Status_baca::firstOrCreate([
@@ -28,14 +31,10 @@ class NotifikasiController extends Controller
                 }
             }
 
-            $isRead = \App\Models\status_baca::where('user_id', $user->id)
-                ->where('notifikasi_id', $notifikasi->id)
-                ->exists();
-
-            return view('page.notifikasi.index', compact('notifikasis', 'dibaca', 'isRead'));
+            return view('page.notifikasi.index', compact('notifikasis', 'dibaca'));
         } catch (\Exception $e) {
-            echo "<script>console.error('PHP Error: " . addslashes($e->getMessage()) . "');</script>";
-            return view('error.index');
+            return redirect()->route('notifikasi.index')
+                ->with('error_message', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -50,16 +49,25 @@ class NotifikasiController extends Controller
             Notifikasi::create($request->all());
 
             return redirect()
-                ->route('notifikasi.index')->with('message_insert', 'Notifikasi berhasil dibuat');
+                ->route('notifikasi.index')
+                ->with('message_insert', 'Notifikasi berhasil dibuat');
         } catch (\Exception $e) {
             return redirect()
-                ->route('notifikasi.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
-        };
+                ->route('notifikasi.index')
+                ->with('error_message', 'Gagal membuat notifikasi: ' . $e->getMessage());
+        }
     }
 
-    public function edit() 
+    public function edit($id)
     {
-
+        try {
+            $notifikasi = Notifikasi::findOrFail($id);
+            return view('page.notifikasi.edit', compact('notifikasi'));
+        } catch (ModelNotFoundException $e) {
+            return redirect()
+                ->route('notifikasi.index')
+                ->with('error_message', 'Notifikasi tidak ditemukan');
+        }
     }
 
     public function update(Request $request, $id)
@@ -77,11 +85,17 @@ class NotifikasiController extends Controller
             ]);
 
             return redirect()
-                ->route('notifikasi.index')->with('message_insert', 'Notifikasi berhasil diperbarui!');
+                ->route('notifikasi.index')
+                ->with('message_insert', 'Notifikasi berhasil diperbarui!');
+        } catch (ModelNotFoundException $e) {
+            return redirect()
+                ->route('notifikasi.index')
+                ->with('error_message', 'Notifikasi tidak ditemukan');
         } catch (\Exception $e) {
             return redirect()
-                ->route('notifikasi.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
-        };
+                ->route('notifikasi.index')
+                ->with('error_message', 'Gagal memperbarui notifikasi: ' . $e->getMessage());
+        }
     }
 
     public function destroy($id)
@@ -90,9 +104,14 @@ class NotifikasiController extends Controller
             $notifikasi = Notifikasi::findOrFail($id);
             $notifikasi->delete();
 
-            return back()->with('message_delete', 'Notifikasi berhasil dihapus!');
+            return back()
+                ->with('message_delete', 'Notifikasi berhasil dihapus!');
+        } catch (ModelNotFoundException $e) {
+            return back()
+                ->with('error_message', 'Notifikasi tidak ditemukan');
         } catch (\Exception $e) {
-            return back()->with('error_mesaage', 'Terjadi kesalahan saat melakukan delete data: ' . $e->getMessage());
+            return back()
+                ->with('error_message', 'Gagal menghapus notifikasi: ' . $e->getMessage());
         }
     }
 }
