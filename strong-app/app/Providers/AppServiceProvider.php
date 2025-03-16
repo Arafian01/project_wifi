@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->booted(function () {
             $schedule = app(Schedule::class);
             $schedule->command('tagihan:generate')->monthlyOn(5, '10:38');
+        });
+        
+        Gate::define('role-admin', function ($user){
+            return $user->role === 'admin';
         });
     }
 }
