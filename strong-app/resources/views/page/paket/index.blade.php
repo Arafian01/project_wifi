@@ -105,8 +105,19 @@
                     <span class="text-sm text-gray-500">Total: {{ $paket->total() }} paket</span>
                 </div>
 
+                <form method="GET" action="{{ route('paket.index') }}" class="mb-4">
+                    <div class="flex gap-2">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Cari berdasarkan nama/deskripsi/harga..." 
+                               class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-red-500">
+                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                            Cari
+                        </button>
+                    </div>
+                </form> 
+
                 <div class="overflow-x-auto rounded-lg border border-gray-100">
-                    <table class="w-full">
+                    <table class="w-full" >
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">No</th>
@@ -152,9 +163,29 @@
                     </table>
                 </div>
 
-                <div class="mt-4">
-                    {{ $paket->links() }}
-                </div>
+                <div class="mt-4 flex items-center justify-between">
+                    <!-- Entries Per Page -->
+                    <form method="GET" action="{{ route('paket.index') }}" class="flex items-center space-x-2">
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                        <input type="hidden" name="page" value="{{ request('page', 1) }}">
+                        <label for="entries" class="text-sm">Show:</label>
+                        <select name="entries" onchange="this.form.submit()"
+                            class="w-20 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="5" {{ request('entries') == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ request('entries') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('entries') == 25 ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('entries') == 50 ? 'selected' : '' }}>50</option>
+                        </select>
+                        <label class="text-sm">entries</label>
+                    </form>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center space-x-2">
+                        {{ $paket->appends([
+                            'entries' => request('entries'),
+                            'search' => request('search')
+                        ])->links() }}
+                    </div>
             </div>
         </div>
     </div>
@@ -289,6 +320,42 @@
     </div>
 
     <script>
+        // Fungsi Pencarian
+        function searchTable() {
+            // Ambil input pencarian
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toLowerCase();
+            
+            // Ambil tabel dan baris
+            let table = document.getElementById("packageTable");
+            let rows = table.getElementsByTagName("tr");
+
+            // Loop melalui semua baris
+            for (let i = 1; i < rows.length; i++) { // Mulai dari 1 untuk melewati header
+                let cells = rows[i].getElementsByTagName("td");
+                let showRow = false;
+                
+                // Cek setiap kolom yang ingin dicari
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        let text = cells[j].textContent.toLowerCase() || cells[j].innerText.toLowerCase();
+                        
+                        // Handle kolom harga khusus
+                        if (j === 2) { // Kolom harga (indeks 2)
+                            text = text.replace(/[^0-9]/g, ''); // Hapus karakter non-numeric
+                        }
+                        
+                        if (text.indexOf(filter) > -1) {
+                            showRow = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Tampilkan/sembunyikan baris
+                rows[i].style.display = showRow ? "" : "none";
+            }
+        }
         // Toggle Modal
         function toggleModal(modalId) {
             const modal = document.getElementById(modalId);
