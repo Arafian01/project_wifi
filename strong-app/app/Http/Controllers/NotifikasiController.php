@@ -33,7 +33,7 @@ class NotifikasiController extends Controller
 
             return view('page.notifikasi.index', compact('notifikasis', 'dibaca'));
         } catch (\Exception $e) {
-            return redirect()->route('notifikasi.index')
+            return redirect()->route('error.index')
                 ->with('error_message', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
@@ -53,7 +53,7 @@ class NotifikasiController extends Controller
                 ->with('message_insert', 'Notifikasi berhasil dibuat');
         } catch (\Exception $e) {
             return redirect()
-                ->route('notifikasi.index')
+                ->route('error.index')
                 ->with('error_message', 'Gagal membuat notifikasi: ' . $e->getMessage());
         }
     }
@@ -82,11 +82,11 @@ class NotifikasiController extends Controller
                 ->with('message_insert', 'Notifikasi berhasil diperbarui!');
         } catch (ModelNotFoundException $e) {
             return redirect()
-                ->route('notifikasi.index')
+                ->route('error.index')
                 ->with('error_message', 'Notifikasi tidak ditemukan');
         } catch (\Exception $e) {
             return redirect()
-                ->route('notifikasi.index')
+                ->route('error.index')
                 ->with('error_message', 'Gagal memperbarui notifikasi: ' . $e->getMessage());
         }
     }
