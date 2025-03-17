@@ -11,7 +11,7 @@ class PaketController extends Controller
     {
         try {
             $search = request('search');
-            $entries = request('entries', 10);
+            $entries = request('entries', 5);
     
             $paket = Paket::when($search, function($query) use ($search) {
                 $query->where('nama_paket', 'like', "%$search%")
@@ -28,7 +28,7 @@ class PaketController extends Controller
             ]);
             
         } catch(\Exception $e) {
-            return redirect()->route('paket.index')->with('error_message', 'Error: ' . $e->getMessage());
+            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
         
     }
@@ -49,7 +49,7 @@ class PaketController extends Controller
             ->route('paket.index')->with('message_insert', 'Data Paket Sudah ditambahkan ');
         } catch (\Exception $e) {
             return redirect()
-            ->route('paket.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+            ->route('error.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
         };
     }
 
@@ -68,7 +68,7 @@ class PaketController extends Controller
             ->route('paket.index')->with('message_insert', 'Data Paket Berhasil diPerbarui ');
         } catch (\Exception $e) {
             return redirect()
-            ->route('paket.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+            ->route('error.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
         };       
     }
 
