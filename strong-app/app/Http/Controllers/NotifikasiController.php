@@ -60,14 +60,7 @@ class NotifikasiController extends Controller
 
     public function edit($id)
     {
-        try {
-            $notifikasi = Notifikasi::findOrFail($id);
-            return view('page.notifikasi.edit', compact('notifikasi'));
-        } catch (ModelNotFoundException $e) {
-            return redirect()
-                ->route('notifikasi.index')
-                ->with('error_message', 'Notifikasi tidak ditemukan');
-        }
+        
     }
 
     public function update(Request $request, $id)
