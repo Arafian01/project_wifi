@@ -37,7 +37,7 @@ class PelangganController extends Controller
             ]);
             
         } catch(\Exception $e) {
-            return redirect()->route('pelanggan.index')->with('error_message', 'Error: ' . $e->getMessage());
+            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
     }
 
@@ -64,9 +64,9 @@ class PelangganController extends Controller
                 ->route('pelanggan.index')->with('message_insert', 'Data pelanggan Sudah ditambahkan ');
         } catch (\Exception $e) {
             return redirect()
-                ->route('pelanggan.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+                ->route('error.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
         };
-    }
+    }   
     public function update(Request $request, String $id)
     {
 
@@ -100,7 +100,7 @@ class PelangganController extends Controller
                 ->route('pelanggan.index')->with('message_insert', 'Data pelanggan Berhasil diPerbarui ');
         } catch (\Exception $e) {
             return redirect()
-                ->route('pelanggan.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+                ->route('error.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
         };
     }
     public function destroy($id)
