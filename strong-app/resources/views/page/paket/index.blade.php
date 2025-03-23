@@ -133,7 +133,7 @@
                                     {{ $paket->perPage() * ($paket->currentPage() - 1) + $key + 1 }}
                                 </td>
                                 <td class="px-4 py-3">
-                                    <div class="font-medium text-gray-800">{{ $p->nama_paket }}</div>
+                                    <div class="font-medium text-gray-800 text-center">{{ $p->nama_paket }}</div>
                                     <div class="text-sm text-gray-500 mt-1">{{ $p->deskripsi }}</div>
                                 </td>
                                 <td class="px-4 py-3 text-sm font-medium text-gray-800">
