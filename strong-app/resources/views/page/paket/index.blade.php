@@ -120,10 +120,10 @@
                     <table class="w-full" >
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">No</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Nama Paket</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Harga</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Aksi</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">No</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Nama Paket</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Harga</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
