@@ -29,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('role-admin', function ($user){
             return $user->role === 'admin';
         });
+        
+        Gate::define('access-laporan', function ($user) {
+            return in_array($user->role, ['admin', 'owner']);
+        });
     }
 }
