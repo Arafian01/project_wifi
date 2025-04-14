@@ -38,4 +38,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('error', ErrorController::class);
 });
 
+// Admin route group
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+});
+
+// User route group
+Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
+});
+
+
 require __DIR__ . '/auth.php';

@@ -15,4 +15,10 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('tagihan:generate')->everyMinute();
     }
+
+    protected $routeMiddleware = [
+        // ...
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
+
 }
