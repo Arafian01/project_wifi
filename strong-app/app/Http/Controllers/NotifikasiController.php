@@ -31,7 +31,7 @@ class NotifikasiController extends Controller
                 }
             }
 
-            return view('page.notifikasi.index', compact('notifikasis', 'dibaca'));
+            return view('admin.page.notifikasi.index', compact('notifikasis', 'dibaca'));
         } catch (\Exception $e) {
             return redirect()->route('error.index')
                 ->with('error_message', 'Terjadi kesalahan: ' . $e->getMessage());

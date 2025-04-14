@@ -11,7 +11,7 @@ class PelangganController extends Controller
 {
     public function index()
     {
-        try {
+        // try {
             $search = request('search');
             $entries = request('entries', 10);
 
@@ -36,9 +36,9 @@ class PelangganController extends Controller
                 'entries' => $entries
             ]);
             
-        } catch(\Exception $e) {
-            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
-        }
+        // } catch(\Exception $e) {
+        //     return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
+        // }
     }
 
     public function store(Request $request)

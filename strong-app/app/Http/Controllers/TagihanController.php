@@ -14,7 +14,7 @@ class TagihanController extends Controller
         $tagihan = tagihan::paginate(5);
         $user = User::all();
         $pelanggan = pelanggan::all();
-        return view('page.tagihan.index')->with([
+        return view('admin.page.tagihan.index')->with([
             'tagihan' => $tagihan,
             'pelanggan' => $pelanggan,
             'user' => $user

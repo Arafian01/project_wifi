@@ -21,7 +21,7 @@ class PaketController extends Controller
             ->paginate($entries)
             ->withQueryString();
     
-            return view('page.paket.index', [
+            return view('admin.page.paket.index', [
                 'paket' => $paket,
                 'search' => $search,
                 'entries' => $entries

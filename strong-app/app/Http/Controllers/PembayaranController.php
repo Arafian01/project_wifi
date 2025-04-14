@@ -20,7 +20,7 @@ class PembayaranController extends Controller
         $pelanggan = Pelanggan::all();
         $tagihan = tagihan::all();
 
-        return view('page.pembayaran.index')->with([
+        return view('admin.page.pembayaran.index')->with([
             'user' => $user,
             'pembayaran' => $pembayaran,
             'paket' => $paket,

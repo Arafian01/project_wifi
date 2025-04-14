@@ -24,11 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('user', UserController::class)->middleware('auth');
-    Route::resource('paket', PaketController::class)->middleware('auth');
-    Route::resource('pelanggan', PelangganController::class)->middleware('auth');
-    Route::resource('tagihan', TagihanController::class)->middleware('auth');
-    Route::resource('pembayaran', PembayaranController::class)->middleware('auth');
+    
 
     Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
@@ -39,14 +35,16 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin route group
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('user', UserController::class)->middleware('auth');
+    Route::resource('paket', PaketController::class)->middleware('auth');
+    Route::resource('pelanggan', PelangganController::class)->middleware('auth');
+    Route::resource('tagihan', TagihanController::class)->middleware('auth');
+    Route::resource('pembayaran', PembayaranController::class)->middleware('auth'); 
 });
 
 // User route group
-Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+Route::middleware(['auth', 'role:pelanggan'])->prefix('user')->group(function () {
     Route::get('/dashboard', function () {
         return view('user.dashboard');
     })->name('user.dashboard');
