@@ -29,7 +29,7 @@ class PelangganController extends Controller
                 })
                 ->paginate($entries);
 
-            return view('page.pelanggan.index', [
+            return view('admin.page.pelanggan.index', [
                 'pelanggan' => $pelanggan,
                 'paket' => Paket::all(),
                 'search' => $search,

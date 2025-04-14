@@ -24,8 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
     Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
     Route::post('/notifikasi/baca/{id}', [NotifikasiController::class, 'baca'])->name('notifikasi.baca');
@@ -34,10 +32,10 @@ Route::middleware('auth')->group(function () {
 });
 Route::resource('error', ErrorController::class);
 Route::resource('user', UserController::class)->middleware(['auth', RoleMiddleware::class]);;
-Route::resource('paket', PaketController::class)->middleware('auth');
+Route::resource('paket', PaketController::class)->middleware(['auth', RoleMiddleware::class]);
 Route::resource('pelanggan', PelangganController::class)->middleware(['auth', RoleMiddleware::class]);
-Route::resource('tagihan', TagihanController::class)->middleware('auth');
-Route::resource('pembayaran', PembayaranController::class)->middleware('auth');
+Route::resource('tagihan', TagihanController::class)->middleware(['auth', RoleMiddleware::class]);
+Route::resource('pembayaran', PembayaranController::class)->middleware(['auth', RoleMiddleware::class]);
 
 
 

@@ -37,9 +37,7 @@
                             <x-slot name="trigger">
                                 <button
                                     class="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors">
-                                    <span
-                                        :class="{ 'text-red-600': request() - > routeIs('role.index', 'user.index',
-                                                'paket.index') }">Master</span>
+                                    <span class="{ 'text-red-600': request() -> routeIs('role.index', 'user.index', 'paket.index') }">Master</span>
                                     <svg class="w-4 h-4 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
