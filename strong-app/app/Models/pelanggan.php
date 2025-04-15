@@ -16,6 +16,7 @@ class pelanggan extends Model
         'telepon',
         'status',
         'tanggal_aktif',
+        'tanggal_langganan',
 
     ];
 
