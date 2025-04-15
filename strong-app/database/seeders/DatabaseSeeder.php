@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\paket;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -23,11 +24,27 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        User::create([
-            'name' => 'Owner',
-            'email' => 'owner@gmail.com',
-            'password' => Hash::make('owner123'),
-            'role' => 'owner',
+        // User::create([
+        //     'name' => 'Owner',
+        //     'email' => 'owner@gmail.com',
+        //     'password' => Hash::make('owner123'),
+        //     'role' => 'owner',
+        // ]);
+
+        paket::create([
+            'nama_paket' => 'Paket A',
+            'harga' => 100000,
+            'deskripsi' => 'Paket A adalah paket dasar',
+        ]);
+        paket::create([
+            'nama_paket' => 'Paket B',
+            'harga' => 200000,
+            'deskripsi' => 'Paket B adalah paket menengah',
+        ]);
+        paket::create([
+            'nama_paket' => 'Paket C',
+            'harga' => 300000,
+            'deskripsi' => 'Paket C adalah paket premium',
         ]);
     }
 }
