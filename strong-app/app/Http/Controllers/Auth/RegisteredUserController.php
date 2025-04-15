@@ -50,7 +50,7 @@ class RegisteredUserController extends Controller
                 'alamat' => $request->alamat,
                 'status' => 'nonaktif',
                 'tanggal_langganan' => now(),
-                'tanggal_nonaktif' => '',
+                'tanggal_aktif' => null, // ganti dengan kosong
             ]);
     
             DB::commit(); // Simpan data ke database
@@ -59,7 +59,7 @@ class RegisteredUserController extends Controller
             return redirect()->route('login')->with('message_success', 'Registrasi berhasil. Silakan login.');
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan jika ada error
-            return back()->withErrors(['error' => 'Terjadi kesalahan saat registrasi.']);
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat registrasi.' . $e->getMessage()]);
         }
     }
 }
