@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('telepon');
             $table->enum('status', ['aktif', 'nonaktif','isolir']);
             $table->date('tanggal_aktif')->nullable();
+            $table->date('tanggal_langganan');
             $table->timestamps();
         });
     }
