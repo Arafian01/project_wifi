@@ -133,14 +133,14 @@
                                     {{ $paket->perPage() * ($paket->currentPage() - 1) + $key + 1 }}
                                 </td>
                                 <td class="px-4 py-3">
-                                    <div class="font-medium text-gray-800 text-center">{{ $p->nama_paket }}</div>
+                                    <div class="font-medium text-gray-800 text-left">{{ $p->nama_paket }}</div>
                                     <div class="text-sm text-gray-500 mt-1">{{ $p->deskripsi }}</div>
                                 </td>
                                 <td class="px-4 py-3 text-sm font-medium text-gray-800">
                                     Rp {{ number_format($p->harga, 0, ',', '.') }}
                                 </td>
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center space-x-2">
+                                <td class="px-4 py-5 flex justify-center ">
+                                    <div class="space-x-2">
                                         <button 
                                             data-id="{{ $p->id }}"
                                             data-nama="{{ $p->nama_paket }}"
