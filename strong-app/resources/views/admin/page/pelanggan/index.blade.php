@@ -83,29 +83,35 @@
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">No</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Nama</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Paket</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Aksi</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">No</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Nama</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Paket</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Alamat</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Status</th>
+                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @foreach ($pelanggan as $key => $p)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-4 py-3 text-sm text-gray-600">{{ $pelanggan->firstItem() + $key }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-600 text-center">{{ $pelanggan->firstItem() + $key }}</td>
                                 <td class="px-4 py-3">
                                     <div class="font-medium text-gray-800">{{ $p->user->name }}</div>
                                     <div class="text-sm text-gray-500">{{ $p->user->email }}</div>
                                 </td>
-                                <td class="px-4 py-3">
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">
+                                <td class="px-4 py-3 text-center">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full ">
                                         {{ $p->paket->nama_paket }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-3">
+                                    <span class="font-medium text-gray-800">
+                                        {{ $p->alamat }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3  text-center">
                                     <span
-                                        class="px-2 py-1 {{ $p->status == 'aktif' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full text-xs">
+                                        class="px-2 py-1 {{ $p->status == 'aktif' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full ">
                                         {{ ucfirst($p->status) }}
                                     </span>
                                 </td>
@@ -275,6 +281,7 @@
                                         required>
                                         <option value="aktif">Aktif</option>
                                         <option value="nonaktif">Nonaktif</option>
+                                        <Iption value="isolir">Isolir</Iption>
                                     </select>
                                 </label>
                             </div>
@@ -436,6 +443,7 @@
                                         required>
                                         <option value="aktif">Aktif</option>
                                         <option value="nonaktif">Nonaktif</option>
+                                        <Iption value="isolir">Isolir</Iption>
                                     </select>
                                 </label>
                             </div>
