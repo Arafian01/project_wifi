@@ -46,6 +46,9 @@
                                     $no = 1;
                                 @endphp
                                 @foreach ($tagihan as $key => $t)
+                                    @php
+                                        $bulan_tahun = date('F Y', strtotime($t->bulan_tahun));
+                                        @endphp
                                     <tr
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <th scope="row"
@@ -56,7 +59,7 @@
                                             {{ $t->pelanggan->user->name }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $t->bulan_tahun }}
+                                            {{ $bulan_tahun }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $t->status_pembayaran }}
