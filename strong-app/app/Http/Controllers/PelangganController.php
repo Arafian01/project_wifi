@@ -11,20 +11,20 @@ class PelangganController extends Controller
 {
     public function index()
     {
-        // try {
+        try {
             $search = request('search');
             $entries = request('entries', 10);
 
             $pelanggan = Pelanggan::with(['user', 'paket'])
-                ->when($search, function($query) use ($search) {
-                    $query->where(function($q) use ($search) {
-                        $q->whereHas('user', function($subQuery) use ($search) {
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->whereHas('user', function ($subQuery) use ($search) {
                             $subQuery->where('name', 'like', "%$search%")
-                                   ->orWhere('email', 'like', "%$search%");
+                                ->orWhere('email', 'like', "%$search%");
                         })
-                        ->orWhere('alamat', 'like', "%$search%")
-                        ->orWhere('telepon', 'like', "%$search%")
-                        ->orWhere('status', 'like', "%$search%");
+                            ->orWhere('alamat', 'like', "%$search%")
+                            ->orWhere('telepon', 'like', "%$search%")
+                            ->orWhere('status', 'like', "%$search%");
                     });
                 })
                 ->paginate($entries);
@@ -35,10 +35,9 @@ class PelangganController extends Controller
                 'search' => $search,
                 'entries' => $entries
             ]);
-            
-        // } catch(\Exception $e) {
-        //     return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
-        // }
+        } catch (\Exception $e) {
+            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
+        }
     }
 
     public function store(Request $request)
@@ -51,12 +50,25 @@ class PelangganController extends Controller
                 'role' => 'pelanggan',
             ]);
 
+            $status = $request->input('status');
+            $tanggal_aktif = null;
+            if ($status == 'aktif') {
+                $tanggal_aktif = now()->format('Y-m-d');
+            } elseif ($status == 'nonaktif') {
+                $tanggal_aktif = null;
+            } elseif ($status == 'isolir') {
+                $tanggal_aktif = null;
+            } else {
+                $tanggal_aktif = null;
+            }
+
             Pelanggan::create([
                 'user_id' => $datauser->id,
                 'paket_id' => $request->input('paket_id'),
                 'alamat' => $request->input('alamat'),
                 'telepon' => $request->input('telepon'),
-                'status' => $request->input('status'),
+                'status' => $status,
+                'tanggal_aktif' => $tanggal_aktif,
                 'tanggal_langganan' => $request->input('tanggal_langganan'),
             ]);
 
@@ -66,17 +78,31 @@ class PelangganController extends Controller
             return redirect()
                 ->route('error.index')->with('error_message', 'terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
         };
-    }   
+    }
     public function update(Request $request, String $id)
     {
 
         try {
             $pelanggan = Pelanggan::findOrFail($id);
+
+            $status = $request->input('status');
+            $tanggal_aktif = null;
+            if ($status == 'aktif') {
+                $tanggal_aktif = now()->format('Y-m-d');
+            } elseif ($status == 'nonaktif') {
+                $tanggal_aktif = null;
+            } elseif ($status == 'isolir') {
+                $tanggal_aktif = null;
+            } else {
+                $tanggal_aktif = null;
+            }
+
             $pelanggan->update([
                 'paket_id' => $request->input('paket_id'),
                 'alamat' => $request->input('alamat'),
                 'telepon' => $request->input('telepon'),
-                'status' => $request->input('status'),
+                'status' => $status,
+                'tanggal_aktif' => $tanggal_aktif,
                 'tanggal_langganan' => $request->input('tanggal_langganan'),
             ]);
 
