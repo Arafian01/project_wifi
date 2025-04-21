@@ -153,7 +153,7 @@
                                 data-placeholder="Pilih Tagihan">
                                 <option value="">Pilih...</option>
                                 @foreach ($tagihan as $t)
-                                    <option value="{{ $t->id }}">{{ $t->bulan_tahun }}</option>
+                                    <option value="{{ $t->id }}">{{ $t->tagihan->pelanggan->user->name }}, {{ $t->bulan_tahun }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -260,7 +260,6 @@
     </div>
 
     <script>
-        $harga = $pelanggan->tagihan->pelanggan->paket->harga
 
         // JavaScript to handle image preview
         const imageInput = document.getElementById('image-input');
