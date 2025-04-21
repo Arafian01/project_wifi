@@ -67,7 +67,7 @@
                                             {{ $p->tagihan->bulan_tahun }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $harga }}
+                                            {{ $p->tagihan->pelanggan->paket->harga }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $p->tanggal_kirim }}
@@ -93,7 +93,7 @@
                                                 Edit
                                             </button>
                                             <button
-                                                onclick="return konsumenDelete('{{ $p->id }}','{{ $p->user->name }}')"
+                                                onclick="return pembayaranDelete('{{ $p->id }}','{{ $p->tagihan->pelanggan->user->name }}')"
                                                 class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
                                         </td>
                                     </tr>
@@ -153,7 +153,7 @@
                                 data-placeholder="Pilih Tagihan">
                                 <option value="">Pilih...</option>
                                 @foreach ($tagihan as $t)
-                                    <option value="{{ $t->id }}">{{ $t->tagihan->pelanggan->user->name }}, {{ $t->bulan_tahun }}</option>
+                                    <option value="{{ $t->id }}">{{ $t->pelanggan->user->name }}, {{ $t->bulan_tahun }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -170,18 +170,20 @@
                             <select class="js-example-placeholder-single js-states form-control w-full" name="status_verifikasi"
                                 data-placeholder="Pilih Status Verifikasi">
                                 <option value="">Pilih...</option>
-                                <option value="diterima">DITERIMA</option>
-                                <option value="ditolak">DITOLAK</option>
+                                <option value="diterima">Diterima</option>
+                                <option value="menunggu verifikasi">Menunggu Verifikasi</option>
+                                <option value="ditolak">Ditolak</option>
+
                             </select>
                         </div>
-                        <div>
+                        {{-- <div>
                             <label for="tanggal_verifikasi"
                                 class="block mb-2 text-sm font-medium text-gray-900">Tanggal Verifikasi</label>
                             <input type="date" id="tanggal_verifikasi" name="tanggal_verifikasi"
                                 value="{{ date('Y-m-d') }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
                         <button type="submit" id="formSourceButton"
@@ -306,5 +308,23 @@
             document.getElementById('sourceModal').classList.add('hidden');
         }
 
+        const pembayaranDelete = async (id, name) => {
+            let tanya = confirm(`Apakah anda yakin untuk menghapus pembayaran  ${name} ?`);
+            if (tanya) {
+                await axios.post(`/pembayaran/${id}`, {
+                        '_method': 'DELETE',
+                        '_token': $('meta[name="csrf-token"]').attr('content')
+                    })
+                    .then(function(response) {
+                        // Handle success
+                        location.reload();
+                    })
+                    .catch(function(error) {
+                        // Handle error
+                        alert('Error deleting record');
+                        console.log(error);
+                    });
+            }
+        }
     </script>
 </x-app-layout>
