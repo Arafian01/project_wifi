@@ -79,8 +79,9 @@
                                             {{ $p->tanggal_verifikasi }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            <img src="{{ $p->image }}" alt="">
+                                            <img src="{{ asset('pembayaran_images/' . $p->image) }}" alt="Bukti Pembayaran">
                                         </td>
+                                        
                                         <td class="px-6 py-4">
                                             <button type="button" data-id="{{ $p->id }}"
                                                 data-modal-target="sourceModalEdit" data-nama="{{ $p->user->name }}"
@@ -123,7 +124,7 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                <form method="POST" id="formSourceModal">
+                <form method="POST" id="formSourceModal" enctype="multipart/form-data">
                     @csrf
                     <div class="flex flex-col p-4 space-y-6">
                         <div class=" flex items-center justify-center ">
@@ -262,7 +263,7 @@
     </div>
 
     <script>
-
+        
         // JavaScript to handle image preview
         const imageInput = document.getElementById('image-input');
         const imagePreview = document.getElementById('image-preview');
