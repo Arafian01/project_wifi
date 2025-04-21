@@ -69,7 +69,7 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <button type="button" data-id="{{ $t->id }}"
-                                                data-modal-target="sourceModal" data-nama="{{ $t->pelanggan_id }}"
+                                                data-modal-target="sourceModalEdit" data-nama="{{ $t->pelanggan_id }}"
                                                 data-bulan_tahun="{{ $t->bulan_tahun }}"
                                                 data-status_pembayaran="{{ $t->status_pembayaran }}"
                                                 data-jatuh_tempo="{{ $t->jatuh_tempo }}"
@@ -254,7 +254,7 @@
             const bulan_tahun = button.dataset.bulan_tahun;
             const status_pembayaran = button.dataset.status_pembayaran;
             const jatuh_tempo = button.dataset.jatuh_tempo;
-            console.log(jatuh_tempo);
+            console.log(nama);
 
             let url = "{{ route('tagihan.update', ':id') }}".replace(':id', id);
 
