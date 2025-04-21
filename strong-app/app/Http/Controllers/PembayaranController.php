@@ -18,29 +18,46 @@ class PembayaranController extends Controller
         $user = User::all();
         $paket = Paket::all();
         $pelanggan = Pelanggan::all();
-        $tagihan = tagihan::all();
+        $tagihan = tagihan::where('status_pembayaran', 'belum_dibayar')->get();
 
-        return view('admin.page.pembayaran.index')->with([
-            'user' => $user,
-            'pembayaran' => $pembayaran,
-            'paket' => $paket,
-            'pelanggan' => $pelanggan,
-            'tagihan' => $tagihan,
-        ]);
+        return view('admin.page.pembayaran.index', compact('pembayaran', 'user', 'paket', 'pelanggan', 'tagihan'));
     }
 
     public function store(Request $request)
     {
+        $tanggal = null;
+        if ($request->input('status_verifikasi') == 'diterima') {
+            $tanggal = now();
+        } elseif ($request->input('status_verifikasi') == 'ditolak') {
+            $tanggal = now();
+        } else {
+            $tanggal = null;
+        }
+
         $data = [
             'user_id' => Auth::user()->id,
             'tagihan_id' => $request->input('tagihan_id'),
             'image' => $request->input('image'),
             'tanggal_kirim' => $request->input('tanggal_kirim'),
             'status_verifikasi' => $request->input('status_verifikasi'),
-            'tanggal_verifikasi' => $request->input('tanggal_verifikasi'),
+            'tanggal_verifikasi' => $tanggal,
         ];
 
         pembayaran::create($data);
+
+        $tagihan = tagihan::findOrFail($request->input('tagihan_id'));
+        $status = null;
+        if ($request->input('status_verifikasi') == 'diterima') {
+            $status = 'lunas';
+        } elseif ($request->input('status_verifikasi') == 'ditolak') {
+            $status = 'ditolak';
+        } else {
+            $status = 'belum_dibayar';
+        }
+
+        $tagihan->update([
+            'status_pembayaran' => $status,
+        ]);
 
         return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
     }
@@ -79,8 +96,6 @@ class PembayaranController extends Controller
     public function destroy($id)
     {
         $data = pembayaran::findOrFail($id);
-        $datauser = User::findOrFail($data->user_id);
-        $datauser->delete();
         $data->delete();
         return back()->with('message_success', 'pembayaran berhasil dihapus');
     }
