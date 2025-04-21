@@ -39,7 +39,7 @@
 
     <div class="py-6 px-4 sm:px-6 lg:px-8">
         <!-- Notifikasi -->
-        @if (Session::has('message_success'))
+        @if (Session::has('message_insert'))
             <script>
                 Swal.fire({
                     icon: 'success',
@@ -138,7 +138,7 @@
                         </table>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        {{ $tagihan->links() }}
+                        {{ $tagihan->appends(['entries' => request('entries'), 'search' => request('search')])->links() }}
                     </div>
                 </div>
 
@@ -221,7 +221,7 @@
                                         <div
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             📅</div>
-                                            <x-text-input type="month" name="bulan_tahun" required
+                                        <x-text-input type="month" name="bulan_tahun" required
                                             class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500" />
                                     </div>
                                 </div>
@@ -231,7 +231,7 @@
                                     <label class="block text-sm font-medium text-gray-700">Status Pembayaran <span
                                             class="text-red-500">*</span></label>
                                     <select name="status_pembayaran" required
-                                        class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500 p-2">
+                                        class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500">
                                         <option value="belum_dibayar">Belum Dibayar</option>
                                         <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
                                         <option value="lunas">Lunas</option>
@@ -269,16 +269,18 @@
         <!-- Edit Modal -->
         <div id="editModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
             <div class="fixed inset-0 flex items-center justify-center p-4">
-                <div
-                    class="w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
+                <div class="w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-white rounded-2xl shadow-xl flex flex-col">
                     <!-- Header -->
-                    <div class="p-6 border-b bg-indigo-50 rounded-t-2xl flex justify-between items-center">
-                        <h3 class="text-xl font-bold text-indigo-600">Edit Tagihan</h3>
+                    <div class="p-6 border-b bg-red-50 rounded-t-2xl flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-600">Edit Tagihan</h3>
+                            <p class="text-sm text-red-400 mt-1">Perbarui data Tagihan</p>
+                        </div>
                         <button onclick="toggleModal('editModal')"
-                            class="text-indigo-500 hover:text-indigo-700 text-2xl p-2">✕</button>
+                            class="text-red-500 hover:text-red-700 text-2xl p-2">✕</button>
                     </div>
                     <!-- Form -->
-                    <form id="editForm" method="POST" class="flex-1 flex flex-col">
+                    <form id="editForm" method="POST" class="flex-1 flex flex-col overflow-hidden">
                         @csrf
                         @method('PUT')
                         <div class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
@@ -286,7 +288,7 @@
                                 <label class="block text-sm font-medium text-gray-700">Pelanggan <span
                                         class="text-red-500">*</span></label>
                                 <select name="pelanggan_id" required
-                                    class="w-full rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500 mt-1">
                                     <option value="">Pilih Pelanggan</option>
                                     @foreach ($pelanggan as $p)
                                         <option value="{{ $p->id }}">{{ $p->user->name }}</option>
@@ -296,14 +298,18 @@
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Bulan Tahun <span
                                         class="text-red-500">*</span></label>
-                                <x-text-input id="edit_bulan_tahun" type="month" name="bulan_tahun" required
-                                    class="w-full pl-10 p-2 rounded-lg border-gray-200  focus:border-red-500 focus:ring-red-500" />
+                                <div class="relative mt-1">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        📅</div>
+                                    <x-text-input id="edit_bulan_tahun" type="month" name="bulan_tahun" required
+                                        class="w-full pl-10 p-2 rounded-lg border-gray-200  focus:border-red-500 focus:ring-red-500" />
+                                </div>
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Status Pembayaran <span
                                         class="text-red-500">*</span></label>
                                 <select id="edit_status_pembayaran" name="status_pembayaran" required
-                                    class="w-full rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                                    class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500 ">
                                     <option value="belum_dibayar">Belum Dibayar</option>
                                     <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
                                     <option value="lunas">Lunas</option>
@@ -312,8 +318,13 @@
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Jatuh Tempo <span
                                         class="text-red-500">*</span></label>
-                                <x-text-input id="edit_jatuh_tempo" type="date" name="jatuh_tempo" required
-                                    class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500" />
+                                <div class="relative mt-1">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        📅</div>
+                                    <x-text-input id="edit_jatuh_tempo" type="date" name="jatuh_tempo" required
+                                        class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500" />
+                                </div>
+
                             </div>
                         </div>
                         <!-- Footer -->
@@ -321,7 +332,7 @@
                             <button type="button" onclick="toggleModal('editModal')"
                                 class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
                             <button type="submit"
-                                class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center">
+                                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
