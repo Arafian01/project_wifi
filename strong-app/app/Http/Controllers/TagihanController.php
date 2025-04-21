@@ -11,18 +11,40 @@ class TagihanController extends Controller
 {
     public function index()
     {
-        try {
-            $tagihan = tagihan::paginate(5);
-            $user = User::all();
-            $pelanggan = pelanggan::all();
-            return view('admin.page.tagihan.index')->with([
-                'tagihan' => $tagihan,
-                'pelanggan' => $pelanggan,
-                'user' => $user
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
-        }
+        // try {
+
+        // $tagihan = tagihan::paginate(5);
+        // $user = User::all();
+        // $pelanggan = pelanggan::all();
+        // return view('admin.page.tagihan.index')->with([
+        //     'tagihan' => $tagihan,
+        //     'pelanggan' => $pelanggan,
+        //     'user' => $user
+        // ]);
+        $search = request('search');
+        $entries = request('entries', 10);
+        $tagihan = tagihan::with(['pelanggan', 'pelanggan.user'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('pelanggan.user', function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'like', "%$search%");
+                    })
+                        ->orWhere('bulan_tahun', 'like', "%$search%")
+                        ->orWhere('status_pembayaran', 'like', "%$search%")
+                        ->orWhere('jatuh_tempo', 'like', "%$search%");
+                });
+            })
+            ->paginate($entries);
+        return view('admin.page.tagihan.index', [
+            'tagihan' => $tagihan,
+            'search' => $search,
+            'entries' => $entries,
+            'pelanggan' => Pelanggan::all(),
+            'user' => User::all()
+        ]);
+        // } catch (\Exception $e) {
+        //     return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
+        // }
     }
 
     public function store(Request $request)
@@ -37,7 +59,7 @@ class TagihanController extends Controller
 
             tagihan::create($data);
 
-            return back()->with('message_delete', 'Data Supplier Sudah dihapus');
+            return back()->with('message_insert', 'Data Tagihan Sudah dihapus');
         } catch (\Exception $e) {
             return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
@@ -55,7 +77,7 @@ class TagihanController extends Controller
 
             $datas = tagihan::findOrFail($id);
             $datas->update($data);
-            return back()->with('message_delete', 'Data Supplier Sudah dihapus');
+            return back()->with('message_insert', 'Data Tagihan Sudah dihapus');
         } catch (\Exception $e) {
             return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
@@ -66,7 +88,7 @@ class TagihanController extends Controller
         try {
             $data = tagihan::findOrFail($id);
             $data->delete();
-            return back()->with('message_delete', 'Data Supplier Sudah dihapus');
+            return back()->with('message_insert', 'Data Tagihan Sudah dihapus');
         } catch (\Exception $e) {
             return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         }
