@@ -1,320 +1,394 @@
 <x-app-layout>
+    <!-- Custom Scrollbar CSS -->
+    <style>
+        /* Custom Scrollbar */
+        .modal-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('TAGIHAN') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-gray-800">
+                <span class="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+                    Tagihan
+                </span>
+            </h2>
+            <div class="hidden sm:flex items-center space-x-2">
+                <span class="text-sm text-gray-500">{{ today()->format('F Y') }}</span>
+                <button onclick="toggleModal('createModal')"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                    ➕ Tambah Tagihan
+                </button>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-4 flex items-center justify-between">
-                    <div>DATA TAGIHAN</div>
-                    <div>
-                        <a href="#" onclick="return functionAdd()"
-                            class="bg-sky-600 p-2 hover:bg-sky-400 text-white rounded-xl">Add</a>
+    <div class="py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Notifikasi -->
+        @if (Session::has('message_success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ Session::get('message_success') }}',
+                    timer: 3000
+                });
+            </script>
+        @endif
+        @if (Session::has('message_error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ Session::get('message_error') }}'
+                });
+            </script>
+        @endif
+
+        <!-- Tabel Pelanggan -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3>
+                <span class="text-sm text-gray-500 mt-2 md:mt-0">Total: {{ $tagihan->total() }} Data</span>
+            </div>
+
+            <!-- Search & Entries -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+                <form method="GET" action="{{ route('tagihan.index') }}" class="flex w-full sm:w-auto gap-2">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Cari nama/email/alamat..."
+                        class="w-full sm:w-64 px-4 py-2 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-red-500" />
+                    <button type="submit"
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Cari</button>
+                </form>
+
+                <form method="GET" action="{{ route('tagihan.index') }}" class="flex items-center space-x-2">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <label for="entries" class="text-sm">Tampilkan:</label>
+                    <select name="entries" onchange="this.form.submit()"
+                        class="w-20 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="10" {{ request('entries') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('entries') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('entries') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('entries') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                    <span class="text-sm">data</span>
+                </form>
+            </div>
+
+            <div class="py-6 px-4 sm:px-6 lg:px-8">
+
+                <!-- Desktop Table -->
+                <div
+                    class="hidden sm:block bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3>
+                        <span class="text-sm text-gray-500">Total: {{ $tagihan->total() }} Data</span>
                     </div>
-                </div>
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead
-                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        NO
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        NAMA PELANGGAN
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        BULAN TAHUN
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        STATUS PEMBAYARAN
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        JATUH TEMPO
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        
-                                    </th>
+                    <div class="overflow-x-auto rounded-lg border border-gray-100">
+                        <table class="w-full table-auto text-sm">
+                            <thead class="bg-gray-50">
+                                <tr class="text-gray-700">
+                                    <th class="px-4 py-3 text-center">No</th>
+                                    <th class="px-4 py-3">Nama Pelanggan</th>
+                                    <th class="px-4 py-3">Bulan Tahun</th>
+                                    <th class="px-4 py-3">Status Pembayaran</th>
+                                    <th class="px-4 py-3">Jatuh Tempo</th>
+                                    <th class="px-4 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @php
-                                    $no = 1;
-                                @endphp
+                            <tbody class="divide-y divide-gray-200">
                                 @foreach ($tagihan as $key => $t)
-                                    @php
-                                        $bulan_tahun = date('F Y', strtotime($t->bulan_tahun));
-                                        @endphp
-                                    <tr
-                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <th scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $tagihan->perPage() * ($tagihan->currentPage() - 1) + $key + 1 }}
-                                        </th>
-                                        <td class="px-6 py-4">
-                                            {{ $t->pelanggan->user->name }}
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-4 py-3 text-center">{{ $tagihan->firstItem() + $key }}</td>
+                                        <td class="px-4 py-3">{{ $t->pelanggan->user->name }}</td>
+                                        <td class="px-4 py-3">{{ date('F Y', strtotime($t->bulan_tahun)) }}</td>
+                                        <td class="px-4 py-3">
+                                            {{ ucfirst(str_replace('_', ' ', $t->status_pembayaran)) }}
                                         </td>
-                                        <td class="px-6 py-4">
-                                            {{ $bulan_tahun }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ $t->status_pembayaran }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ $t->jatuh_tempo }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <button type="button" data-id="{{ $t->id }}"
-                                                data-modal-target="sourceModalEdit" data-nama="{{ $t->pelanggan_id }}"
-                                                data-bulan_tahun="{{ $t->bulan_tahun }}"
-                                                data-status_pembayaran="{{ $t->status_pembayaran }}"
-                                                data-jatuh_tempo="{{ $t->jatuh_tempo }}"
-                                                onclick="editSourceModal(this)"
-                                                class="bg-amber-500 hover:bg-amber-600 px-3 py-1 rounded-md text-xs text-white">
-                                                Edit
+                                        <td class="px-4 py-3">{{ $t->jatuh_tempo }}</td>
+                                        <td class="px-4 py-3 text-center space-x-1">
+                                            <button onclick="openEditModal({{ json_encode($t) }})"
+                                                class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-md hover:bg-yellow-200 text-xs">
+                                                ✏️
                                             </button>
                                             <button
-                                                onclick="return tagihanDelete('{{ $t->id }}','{{ $t->pelanggan->user->name }}')"
-                                                class="bg-red-500 hover:bg-bg-red-300 px-3 py-1 rounded-md text-xs text-white">Delete</button>
+                                                onclick="deleteTagihan('{{ $t->id }}','{{ $t->pelanggan->user->name }}')"
+                                                class="px-2 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 text-xs">
+                                                🗑️
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4 flex justify-end">
+                        {{ $tagihan->links() }}
+                    </div>
+                </div>
+
+                <!-- Mobile Card List -->
+                <div class="sm:hidden space-y-4">
+                    @foreach ($tagihan as $key => $t)
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $t->pelanggan->user->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ date('F Y', strtotime($t->bulan_tahun)) }}</p>
+                                </div>
+                                <span
+                                    class="px-2 py-1 {{ $t->status_pembayaran == 'lunas' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full text-xs">
+                                    {{ ucfirst(str_replace('_', ' ', $t->status_pembayaran)) }}
+                                </span>
+                            </div>
+                            <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-700">
+                                <div><span class="font-medium">Jatuh Tempo:</span> {{ $t->jatuh_tempo }}</div>
+                            </div>
+                            <div class="mt-3 flex space-x-2 justify-end">
+                                <button onclick="openEditModal({{ json_encode($t) }})"
+                                    class="px-3 py-1 bg-yellow-100 text-yellow-600 rounded-md text-xs">
+                                    ✏️ Edit
+                                </button>
+                                <button
+                                    onclick="deleteTagihan('{{ $t->id }}','{{ $t->pelanggan->user->name }}')"
+                                    class="px-3 py-1 bg-red-100 text-red-600 rounded-md text-xs">
+                                    🗑️ Hapus
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                    <div class="pt-2">
                         {{ $tagihan->links() }}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModal">
-        <div class="fixed inset-0 bg-black opacity-50"></div>
-        <div class="fixed inset-0 flex items-center justify-center">
-            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 overflow-y-auto max-h-[90vh]">
-                <div class="flex items-start justify-between p-4 border-b rounded-t">
-                    <h3 class="text-xl font-semibold text-gray-900" id="title_source">
-                        Tambah Pelanggan
-                    </h3>
-                    <button type="button" onclick="sourceModalClose()" data-modal-target="sourceModal"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-                        data-modal-hide="defaultModal">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+
+        <!-- Floating Button (mobile only) -->
+        <button onclick="toggleModal('createModal')"
+            class="fixed bottom-4 right-4 w-14 h-14 bg-red-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-700 sm:hidden">
+            ➕
+        </button>
+
+        <!-- Create Modal -->
+        <div id="createModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+            <div class="fixed inset-0 flex items-center justify-center p-4">
+                <div class="w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-white rounded-2xl shadow-xl flex flex-col">
+
+                    <div class="p-6 border-b bg-red-50 rounded-t-2xl flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-600">Tambah Pelanggan Baru</h3>
+                            <p class="text-sm text-red-400 mt-1">Isi semua bidang yang diperlukan (*)</p>
+                        </div>
+                        <button onclick="toggleModal('createModal')"
+                            class="text-red-500 hover:text-red-700 text-2xl p-2">✕</button>
+                    </div>
+                    <form action="{{ route('tagihan.store') }}" method="post"
+                        class="flex-1 flex flex-col overflow-hidden">
+                        @csrf
+                        <div class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Pelanggan <span
+                                            class="text-red-500">*</span></label>
+                                    <select name="pelanggan_id" required
+                                        class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500">
+                                        <option value="">👤 Pilih Pelanggan</option>
+                                        @foreach ($pelanggan as $p)
+                                            <option value="{{ $p->id }}">👤 {{ $p->user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Bulan Tahun <span
+                                            class="text-red-500">*</span></label>
+                                    <div class="relative mt-1">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            📅</div>
+                                            <x-text-input type="month" name="bulan_tahun" required
+                                            class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Status Pembayaran <span
+                                            class="text-red-500">*</span></label>
+                                    <select name="status_pembayaran" required
+                                        class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500 p-2">
+                                        <option value="belum_dibayar">Belum Dibayar</option>
+                                        <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+                                        <option value="lunas">Lunas</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Jatuh Tempo <span
+                                            class="text-red-500">*</span></label>
+                                    <div class="relative mt-1">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            📅</div>
+                                        <x-text-input type="date" name="jatuh_tempo" required
+                                            class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 border-t bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                            <button type="button" onclick="toggleModal('createModal')"
+                                class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>Simpan Data
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form method="POST" id="formSourceModal">
-                    @csrf
-                    <div class="flex flex-col p-4 space-y-6">
-                        <div>
-                            <label for="pelanggan_id"
-                                class="block mb-2 text-sm font-medium text-gray-900">Pelanggan</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full"
-                                name="pelanggan_id" data-placeholder="Pilih Pelanggan">
-                                <option value="">Pilih...</option>
-                                @foreach ($pelanggan as $p)
-                                    <option value="{{ $p->id }}">{{ $p->user->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label for="bulan_tahun"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bulan Tahun</label>
-                            <input name="bulan_tahun" type="month" id="bulan_tahun"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="status_pembayaran"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
-                                Pembayaran</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full m-6"
-                                name="status_pembayaran" data-placeholder="Pilih Status Pembayaran">
-                                <option value="">Pilih...</option>
-                                <option value="belum_dibayar">Belum Dibayar</option>
-                                <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
-                                <option value="lunas">Lunas</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="jatuh_tempo"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jatuh Tempo</label>
-                            <input name="jatuh_tempo" type="date" id="jatuh_tempo"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                    </div>
-                    <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
-                        <button type="submit" id="formSourceButton"
-                            class="bg-green-400 m-2 w-40 h-10 rounded-xl hover:bg-green-500">Simpan</button>
-                        <button type="button" onclick="sourceModalClose()"
-                            class="bg-red-500 m-2 w-40 h-10 rounded-xl text-white hover:shadow-lg hover:bg-red-600">Batal</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
 
-    <div class="fixed inset-0 items-center justify-center z-50 hidden" id="sourceModalEdit">
-        <div class="fixed inset-0 bg-black opacity-50" onclick="sourceModalClose()"></div>
-        <div class="fixed inset-0 flex items-center justify-center">
-            <div class="w-full md:w-1/2 relative bg-white rounded-lg shadow mx-5 max-h-[80vh] overflow-y-auto">
-                <div class="flex items-start justify-between p-4 border-b rounded-t">
-                    <h3 class="text-xl font-semibold text-gray-900">
-                        Edit Pelanggan
-                    </h3>
-                    <button type="button" onclick="sourceModalClose()"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+        <!-- Edit Modal -->
+        <div id="editModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+            <div class="fixed inset-0 flex items-center justify-center p-4">
+                <div
+                    class="w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
+                    <!-- Header -->
+                    <div class="p-6 border-b bg-indigo-50 rounded-t-2xl flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-indigo-600">Edit Tagihan</h3>
+                        <button onclick="toggleModal('editModal')"
+                            class="text-indigo-500 hover:text-indigo-700 text-2xl p-2">✕</button>
+                    </div>
+                    <!-- Form -->
+                    <form id="editForm" method="POST" class="flex-1 flex flex-col">
+                        @csrf
+                        @method('PUT')
+                        <div class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Pelanggan <span
+                                        class="text-red-500">*</span></label>
+                                <select name="pelanggan_id" required
+                                    class="w-full rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                                    <option value="">Pilih Pelanggan</option>
+                                    @foreach ($pelanggan as $p)
+                                        <option value="{{ $p->id }}">{{ $p->user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Bulan Tahun <span
+                                        class="text-red-500">*</span></label>
+                                <x-text-input id="edit_bulan_tahun" type="month" name="bulan_tahun" required
+                                    class="w-full pl-10 p-2 rounded-lg border-gray-200  focus:border-red-500 focus:ring-red-500" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Status Pembayaran <span
+                                        class="text-red-500">*</span></label>
+                                <select id="edit_status_pembayaran" name="status_pembayaran" required
+                                    class="w-full rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                                    <option value="belum_dibayar">Belum Dibayar</option>
+                                    <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+                                    <option value="lunas">Lunas</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Jatuh Tempo <span
+                                        class="text-red-500">*</span></label>
+                                <x-text-input id="edit_jatuh_tempo" type="date" name="jatuh_tempo" required
+                                    class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500" />
+                            </div>
+                        </div>
+                        <!-- Footer -->
+                        <div class="p-6 border-t bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                            <button type="button" onclick="toggleModal('editModal')"
+                                class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form method="POST" id="formSourceModalEdit">
-                    @csrf
-                    <div class="flex flex-col p-4 space-y-6">
-                        <div>
-                            <label for="pelanggan_id_edit"
-                                class="block mb-2 text-sm font-medium text-gray-900">Pelanggan</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full" id="pelanggan_id_edit"
-                                name="pelanggan_id" data-placeholder="Pilih Pelanggan">
-                                <option value="">Pilih...</option>
-                                @foreach ($pelanggan as $p)
-                                    <option value="{{ $p->id }}">{{ $p->user->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label for="bulan_tahun_edit"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bulan
-                                Tahun</label>
-                            <input name="bulan_tahun" type="month" id="bulan_tahun_edit"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="status_pembayaran_edit"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
-                                Pembayaran</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full m-6" id="status_pembayaran_edit"
-                                name="status_pembayaran" data-placeholder="Pilih Status Pembayaran">
-                                <option value="">Pilih...</option>
-                                <option value="belum_dibayar">Belum Dibayar</option>
-                                <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
-                                <option value="lunas">Lunas</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="jatuh_tempo_edit"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jatuh
-                                Tempo</label>
-                            <input name="jatuh_tempo" type="date" id="jatuh_tempo_edit"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        </div>
-                    </div>
-                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b">
-                        <button type="submit"
-                            class="bg-green-500 text-white w-40 h-10 rounded-lg hover:bg-green-600">Simpan</button>
-                        <button type="button" onclick="sourceModalClose()"
-                            class="bg-red-500 text-white w-40 h-10 rounded-lg hover:bg-red-600 ml-2">Batal</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
 
-    <script>
-        const functionAdd = () => {
-            const formModal = document.getElementById('formSourceModal');
-            const modal = document.getElementById('sourceModal');
-
-            // Set form action URL
-            let url = "{{ route('tagihan.store') }}";
-            document.getElementById('title_source').innerText = "Add tagihan";
-            formModal.setAttribute('action', url);
-
-            // Display the modal
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            // Ensure CSRF token is added once
-            if (!formModal.querySelector('input[name="_token"]')) {
-                let csrfToken = document.createElement('input');
-                csrfToken.setAttribute('type', 'hidden');
-                csrfToken.setAttribute('name', '_token');
-                csrfToken.setAttribute('value', '{{ csrf_token() }}');
-                formModal.appendChild(csrfToken);
-            }
-        }
-
-        const editSourceModal = (button) => {
-            const formModal = document.getElementById('formSourceModalEdit');
-            const modalTarget = button.dataset.modalTarget;
-            const id = button.dataset.id;
-            const nama = button.dataset.nama;
-            const bulan_tahun = button.dataset.bulan_tahun;
-            const status_pembayaran = button.dataset.status_pembayaran;
-            const jatuh_tempo = button.dataset.jatuh_tempo;
-            console.log(nama);
-
-            let url = "{{ route('tagihan.update', ':id') }}".replace(':id', id);
-
-            let status = document.getElementById(modalTarget);
-            document.getElementById('title_source').innerText = `Update tagihan ${nama}`;
-
-            document.getElementById('bulan_tahun_edit').value = bulan_tahun;
-            document.getElementById('jatuh_tempo_edit').value = jatuh_tempo;
-
-            let event = new Event('change');
-            document.getElementById('status_pembayaran_edit').value = status_pembayaran;
-            document.getElementById('status_pembayaran_edit').dispatchEvent(event);
-
-            document.getElementById('pelanggan_id_edit').value = nama;
-            document.getElementById('pelanggan_id_edit').dispatchEvent(event);
-
-
-            formModal.setAttribute('action', url);
-
-            if (!formModal.querySelector('input[name="_token"]')) {
-                let csrfToken = document.createElement('input');
-                csrfToken.setAttribute('type', 'hidden');
-                csrfToken.setAttribute('name', '_token');
-                csrfToken.setAttribute('value', '{{ csrf_token() }}');
-                formModal.appendChild(csrfToken);
+        <script>
+            // Toggle any modal by ID
+            function toggleModal(modalId) {
+                document.getElementById(modalId).classList.toggle('hidden');
             }
 
-            if (!formModal.querySelector('input[name="_method"]')) {
-                let methodInput = document.createElement('input');
-                methodInput.setAttribute('type', 'hidden');
-                methodInput.setAttribute('name', '_method');
-                methodInput.setAttribute('value', 'PATCH');
-                formModal.appendChild(methodInput);
+            // Open the Edit Tagihan modal and populate fields
+            function openEditModal(tagihan) {
+                const form = document.getElementById('editForm');
+                const modal = document.getElementById('editModal');
+
+                form.elements['pelanggan_id'].value = tagihan.pelanggan_id;
+                form.elements['bulan_tahun'].value = tagihan.bulan_tahun;
+                form.elements['status_pembayaran'].value = tagihan.status_pembayaran;
+                form.elements['jatuh_tempo'].value = tagihan.jatuh_tempo;
+
+                // Update action URL
+                form.setAttribute('action', `/tagihan/${tagihan.id}`);
+
+                // Show modal
+                modal.classList.remove('hidden');
             }
 
-            document.getElementById(modalTarget).classList.remove('hidden');
-        }
+            // Delete confirmation & request for a Tagihan
+            async function deleteTagihan(id, name) {
+                const result = await Swal.fire({
+                    title: `Hapus tagihan ${name}?`,
+                    text: "Data tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!'
+                });
 
-        const sourceModalClose = () => {
-            document.getElementById('sourceModalEdit').classList.add('hidden');
-            document.getElementById('sourceModal').classList.add('hidden');
-        }
+                if (!result.isConfirmed) return;
 
-        const tagihanDelete = async (id, name) => {
-            let tanya = confirm(`Apakah anda yakin untuk menghapus Tagihan Pelanggan ${name} ?`);
-            if (tanya) {
-                await axios.post(`/tagihan/${id}`, {
-                        '_method': 'DELETE',
-                        '_token': $('meta[name="csrf-token"]').attr('content')
-                    })
-                    .then(function(response) {
-                        // Handle success
-                        location.reload();
-                    })
-                    .catch(function(error) {
-                        // Handle error
-                        alert('Error deleting record');
-                        console.log(error);
+                try {
+                    await fetch(`/tagihan/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            _method: 'DELETE'
+                        })
                     });
+                    await Swal.fire('Terhapus!', 'Tagihan berhasil dihapus.', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } catch (err) {
+                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+                    console.error(err);
+                }
             }
-        }
-    </script>
+        </script>
+
 </x-app-layout>
