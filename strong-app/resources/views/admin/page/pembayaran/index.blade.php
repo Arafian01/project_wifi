@@ -249,10 +249,11 @@
                             </div>
                         </div>
 
-                        <div>
+                        <div class="space-y-2">
                             <label for="tagihan_id"
-                                class="block mb-2 text-sm font-medium text-gray-900">Tagihan</label>
-                            <select class="js-example-placeholder-single js-states form-control w-full"
+                            class="block text-sm font-medium text-gray-700">Tagihan<span
+                            class="text-red-500">*</span></label>
+                            <select class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500"
                                 name="tagihan_id" data-placeholder="Pilih Tagihan">
                                 <option value="">Pilih...</option>
                                 @foreach ($tagihan as $t)
@@ -261,17 +262,18 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div>
-                            <label for="tanggal_kirim" class="block mb-2 text-sm font-medium text-gray-900">Tanggal
-                                Kirim</label>
+                        <div class="space-y-2">
+                            <label for="tanggal_kirim" class="block text-sm font-medium text-gray-700">Tanggal
+                                Kirim <span class="text-red-500">*</span></label>
                             <input type="date" id="tanggal_kirim" name="tanggal_kirim"
                                 value="{{ date('Y-m-d') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="w-full pl-10 p-2 rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500"
                                 required />
                         </div>
-                        <div>
-                            <label for="status_verifikasi" class="block mb-2 text-sm font-medium text-gray-900">Status
-                                Verifikasi</label>
+                        <div class="space-y-2">
+                            <label for="status_verifikasi" class="block text-sm font-medium text-gray-700">Status
+                                Verifikasi <span
+                                class="text-red-500">*</span></label>
                             <select class="js-example-placeholder-single js-states form-control w-full"
                                 name="status_verifikasi" data-placeholder="Pilih Status Verifikasi">
                                 <option value="">Pilih...</option>
@@ -290,11 +292,22 @@
                                     required />
                             </div> --}}
                     </div>
-                    <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
+                    {{-- <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b">
                         <button type="submit" id="formSourceButton"
                             class="bg-green-400 m-2 w-40 h-10 rounded-xl hover:bg-green-500">Simpan</button>
                         <button type="button" onclick="sourceModalClose()"
                             class="bg-red-500 m-2 w-40 h-10 rounded-xl text-white hover:shadow-lg hover:bg-red-600">Batal</button>
+                    </div> --}}
+                    <div class="p-6 border-t bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                        <button type="button" onclick="sourceModalClose()"
+                            class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                        <button type="submit"
+                            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>Simpan Data
+                        </button>
                     </div>
                 </form>
             </div>
