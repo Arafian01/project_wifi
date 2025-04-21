@@ -9,6 +9,7 @@ use App\Models\tagihan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PembayaranController extends Controller
 {
@@ -33,11 +34,21 @@ class PembayaranController extends Controller
         } else {
             $tanggal = null;
         }
+        
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('pembayaran_images'), $imageName);
+        } else {
+            $imageName = null;
+        };
+            
 
         $data = [
             'user_id' => Auth::user()->id,
             'tagihan_id' => $request->input('tagihan_id'),
-            'image' => $request->input('image'),
+            'image' => $imageName,
             'tanggal_kirim' => $request->input('tanggal_kirim'),
             'status_verifikasi' => $request->input('status_verifikasi'),
             'tanggal_verifikasi' => $tanggal,
@@ -50,9 +61,9 @@ class PembayaranController extends Controller
         if ($request->input('status_verifikasi') == 'diterima') {
             $status = 'lunas';
         } elseif ($request->input('status_verifikasi') == 'ditolak') {
-            $status = 'ditolak';
-        } else {
             $status = 'belum_dibayar';
+        } elseif ($request->input('status_verifikasi') == 'menunggu verifikasi') {
+            $status = 'menunggu_verifikasi';
         }
 
         $tagihan->update([
@@ -63,31 +74,42 @@ class PembayaranController extends Controller
     }
     public function update(Request $request, String $id)
     {
-        
-
         $pembayaran = pembayaran::findOrFail($id);
-        $pembayaran->update([
-            'paket_id' => $request->input('paket_id'),
-            'alamat' => $request->input('alamat'),
-            'telepon' => $request->input('telepon'),
-            'status' => $request->input('status'),
-            'tanggal_langganan' => $request->input('tanggal_langganan'),
-        ]);
 
-        $user = User::where('id', $pembayaran->user_id)->first();
-        
-        if($request->input('password') == ""){
-            $datapassword = $user->password;
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($pembayaran->image && file_exists(public_path('pembayaran_images/' . $pembayaran->image))) {
+                unlink(public_path('pembayaran_images/' . $pembayaran->image));
+            }
+
+            // Simpan gambar baru
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('pembayaran_images'), $imageName);
         } else {
-            $datapassword = $request->input('password');
+            // Gunakan gambar lama jika tidak ada perubahan
+            $imageName = $pembayaran->image;
         };
 
-        $user->update([
-            'name' => $request->input('nama'),
-            'email' => $request->input('email'),
-            'password' => $datapassword,
-            'role' => 'pembayaran',
+        $pembayaran->update([
+            'user_id' => $request->input('user_id'),
+            'tagihan_id' => $request->input('tagihan_id'),
+            'image' => $imageName,
+            'tanggal_kirim' => $request->input('tanggal_kirim'),
+            'status_verifikasi' => $request->input('status_verifikasi'),
+            'tanggal_verifikasi' => now(),
+        ]);
 
+        $tagihan = tagihan::findOrFail($request->input('tagihan_id'));
+        $status = null;
+        if ($request->input('status_verifikasi') == 'diterima') {
+            $status = 'lunas';
+        } else {
+            $status = 'menunggu_verifikasi';
+        }
+
+        $tagihan->update([
+            'status_pembayaran' => $status,
         ]);
 
         return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
@@ -96,7 +118,24 @@ class PembayaranController extends Controller
     public function destroy($id)
     {
         $data = pembayaran::findOrFail($id);
-        $data->delete();
+        // Hapus gambar jika ada
+        if ($data->image && file_exists(public_path('pembayaran_images/' . $data->image))) {
+            unlink(public_path('pembayaran_images/' . $data->image));
+        }
+        
+        // Update status pembayaran di tagihan
+        $tagihan = tagihan::findOrFail($data->tagihan_id);
+        // Jika status pembayaran adalah 'lunas', ubah menjadi 'belum_dibayar'
+        $status = null;
+        if ($tagihan->status_pembayaran == 'lunas') {
+            return back()->with('message_success', 'pembayaran sudah lunas, tidak bisa dihapus');
+        } else {
+            $status ='belum_dibayar';
+            $data->delete();
+        }
+        $tagihan->update([
+            'status_pembayaran' => $status,
+        ]);
         return back()->with('message_success', 'pembayaran berhasil dihapus');
     }
 }
