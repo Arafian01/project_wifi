@@ -27,7 +27,6 @@
                     Manajemen Pelanggan
                 </span>
             </h2>
-            <!-- Desktop: show on md and up -->
             <div class="hidden sm:flex items-center space-x-2">
                 <span class="text-sm text-gray-500">{{ today()->format('F Y') }}</span>
                 <button onclick="toggleModal('createModal')"
@@ -91,160 +90,109 @@
                 </form>
             </div>
 
-            {{-- <!-- Table -->
-            <div class="overflow-x-auto rounded-lg border border-gray-100">
-                <table class="w-full table-auto">
-                    <thead class="bg-gray-50">
-                        <tr class="text-sm text-gray-700">
-                            <th class="px-4 py-3 text-center">No</th>
-                            <th class="px-4 py-3">Nama</th>
-                            <th class="px-4 py-3">Email</th>
-                            <th class="px-4 py-3 text-center">Paket</th>
-                            <th class="px-4 py-3 text-center">Status</th>
-                            <th class="px-4 py-3">Alamat</th>
-                            <th class="px-4 py-3">Telepon</th>
-                            <th class="px-4 py-3 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 text-sm">
-                        @foreach ($pelanggan as $key => $p)
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-4 py-3 text-center">{{ $pelanggan->firstItem() + $key }}</td>
-                                <td class="px-4 py-3">{{ $p->user->name }}</td>
-                                <td class="px-4 py-3">{{ $p->user->email }}</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full">
-                                        {{ $p->paket->nama_paket }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="px-2 py-1 {{ $p->status == 'aktif' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full">
-                                        {{ ucfirst($p->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3">{{ Str::limit($p->alamat, 50) }}</td>
-                                <td class="px-4 py-3">{{ $p->telepon }}</td>
-                                <td class="px-4 py-3 text-center space-x-1">
-                                    <button onclick="openEditModal({{ $p }})"
-                                        class="px-2 py-1 bg-orange-100 text-orange-600 rounded-md hover:bg-orange-200 text-xs">
-                                        ✏️ Edit
-                                    </button>
-                                    <button onclick="deletePelanggan('{{ $p->id }}', '{{ $p->user->name }}')"
-                                        class="px-2 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 text-xs">
-                                        🗑️ Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> --}}
+            <div class="py-6 px-4 sm:px-6 lg:px-8">
 
-            <!-- Pagination -->
-            {{-- <div class="mt-4 flex justify-end">
-                {{ $pelanggan->appends([
-                        'entries' => request('entries'),
-                        'search' => request('search'),
-                    ])->links() }}
-            </div> --}}
+                {{-- Desktop Table --}}
+                <div
+                    class="hidden sm:block bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3>
+                        <span class="text-sm text-gray-500">Total: {{ $pelanggan->total() }} Data</span>
+                    </div>
+                    <div class="overflow-x-auto rounded-lg border border-gray-100">
+                        <table class="w-full table-auto text-sm">
+                            <thead class="bg-gray-50">
+                                <tr class="text-gray-700">
+                                    <th class="px-4 py-3 text-center">No</th>
+                                    <th class="px-4 py-3">Nama</th>
+                                    <th class="px-4 py-3">Email</th>
+                                    <th class="px-4 py-3 text-center">Paket</th>
+                                    <th class="px-4 py-3 text-center">Status</th>
+                                    <th class="px-4 py-3">Alamat</th>
+                                    <th class="px-4 py-3">Telepon</th>
+                                    <th class="px-4 py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach ($pelanggan as $key => $p)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-4 py-3 text-center">{{ $pelanggan->firstItem() + $key }}</td>
+                                        <td class="px-4 py-3">{{ $p->user->name }}</td>
+                                        <td class="px-4 py-3">{{ $p->user->email }}</td>
+                                        <td class="px-4 py-3 text-center">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full">
+                                                {{ $p->paket->nama_paket }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            <span
+                                                class="px-2 py-1 {{ $p->status == 'aktif' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full">
+                                                {{ ucfirst($p->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3">{{ Str::limit($p->alamat, 30) }}</td>
+                                        <td class="px-4 py-3">{{ $p->telepon }}</td>
+                                        <td class="px-4 py-3 text-center space-x-1">
+                                            <button onclick="openEditModal({{ $p }})"
+                                                class="px-2 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
+                                                ✏️
+                                            </button>
+                                            <button
+                                                onclick="deletePelanggan('{{ $p->id }}','{{ $p->user->name }}')"
+                                                class="px-2 py-1 bg-red-100 text-red-600 rounded-md text-xs">
+                                                🗑️
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        {{ $pelanggan->appends(['entries' => request('entries'), 'search' => request('search')])->links() }}
+                    </div>
+                </div>
 
-            {{-- Responsive Pelanggan List --}}
+                {{-- Mobile Card List --}}
+                <div class="sm:hidden space-y-4">
+                    @foreach ($pelanggan as $key => $p)
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $p->user->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $p->user->email }}</p>
+                                </div>
+                                <span
+                                    class="px-2 py-1 {{ $p->status == 'aktif' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }} rounded-full text-xs">
+                                    {{ ucfirst($p->status) }}
+                                </span>
+                            </div>
+                            <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-700">
+                                <div><span class="font-medium">Paket:</span> {{ $p->paket->nama_paket }}</div>
+                                <div><span class="font-medium">Telepon:</span> {{ $p->telepon }}</div>
+                                <div class="col-span-2"><span class="font-medium">Alamat:</span>
+                                    {{ Str::limit($p->alamat, 50) }}</div>
+                            </div>
+                            <div class="mt-3 flex space-x-2 justify-end">
+                                <button onclick="openEditModal({{ $p }})"
+                                    class="px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="deletePelanggan('{{ $p->id }}','{{ $p->user->name }}')"
+                                    class="px-3 py-1 bg-red-100 text-red-600 rounded-md text-xs">
+                                    🗑️ Hapus
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
 
-<div class="py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="pt-2">
+                        {{ $pelanggan->appends(['entries' => request('entries'), 'search' => request('search')])->links() }}
+                    </div>
+                </div>
 
-    {{-- Desktop Table --}}
-    <div class="hidden sm:block bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3>
-        <span class="text-sm text-gray-500">Total: {{ $pelanggan->total() }} Data</span>
-      </div>
-      <div class="overflow-x-auto rounded-lg border border-gray-100">
-        <table class="w-full table-auto text-sm">
-          <thead class="bg-gray-50">
-            <tr class="text-gray-700">
-              <th class="px-4 py-3 text-center">No</th>
-              <th class="px-4 py-3">Nama</th>
-              <th class="px-4 py-3">Email</th>
-              <th class="px-4 py-3 text-center">Paket</th>
-              <th class="px-4 py-3 text-center">Status</th>
-              <th class="px-4 py-3">Alamat</th>
-              <th class="px-4 py-3">Telepon</th>
-              <th class="px-4 py-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            @foreach ($pelanggan as $key => $p)
-              <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 text-center">{{ $pelanggan->firstItem() + $key }}</td>
-                <td class="px-4 py-3">{{ $p->user->name }}</td>
-                <td class="px-4 py-3">{{ $p->user->email }}</td>
-                <td class="px-4 py-3 text-center">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full">
-                    {{ $p->paket->nama_paket }}
-                  </span>
-                </td>
-                <td class="px-4 py-3 text-center">
-                  <span class="px-2 py-1 {{ $p->status=='aktif'?'bg-green-100 text-green-600':'bg-red-100 text-red-600' }} rounded-full">
-                    {{ ucfirst($p->status) }}
-                  </span>
-                </td>
-                <td class="px-4 py-3">{{ Str::limit($p->alamat,30) }}</td>
-                <td class="px-4 py-3">{{ $p->telepon }}</td>
-                <td class="px-4 py-3 text-center space-x-1">
-                  <button onclick="openEditModal({{ $p }})" class="px-2 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
-                    ✏️
-                  </button>
-                  <button onclick="deletePelanggan('{{ $p->id }}','{{ $p->user->name }}')" class="px-2 py-1 bg-red-100 text-red-600 rounded-md text-xs">
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-      <div class="mt-4 flex justify-end">
-        {{ $pelanggan->appends(['entries'=>request('entries'),'search'=>request('search')])->links() }}
-      </div>
-    </div>
-  
-    {{-- Mobile Card List --}}
-    <div class="sm:hidden space-y-4">
-      @foreach ($pelanggan as $key => $p)
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-4">
-          <div class="flex justify-between items-start">
-            <div>
-              <h4 class="font-semibold text-gray-800">{{ $p->user->name }}</h4>
-              <p class="text-xs text-gray-500">{{ $p->user->email }}</p>
             </div>
-            <span class="px-2 py-1 {{ $p->status=='aktif'?'bg-green-100 text-green-600':'bg-red-100 text-red-600' }} rounded-full text-xs">
-              {{ ucfirst($p->status) }}
-            </span>
-          </div>
-          <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-700">
-            <div><span class="font-medium">Paket:</span> {{ $p->paket->nama_paket }}</div>
-            <div><span class="font-medium">Telepon:</span> {{ $p->telepon }}</div>
-            <div class="col-span-2"><span class="font-medium">Alamat:</span> {{ Str::limit($p->alamat,50) }}</div>
-          </div>
-          <div class="mt-3 flex space-x-2 justify-end">
-            <button onclick="openEditModal({{ $p }})" class="px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
-              ✏️ Edit
-            </button>
-            <button onclick="deletePelanggan('{{ $p->id }}','{{ $p->user->name }}')" class="px-3 py-1 bg-red-100 text-red-600 rounded-md text-xs">
-              🗑️ Hapus
-            </button>
-          </div>
-        </div>
-      @endforeach
-  
-      <div class="pt-2">
-        {{ $pelanggan->appends(['entries'=>request('entries'),'search'=>request('search')])->links() }}
-      </div>
-    </div>
-  
-  </div>
-  
+
         </div>
     </div>
 
@@ -283,7 +231,7 @@
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             👤</div>
                                         <x-text-input name="name" required placeholder="John Doe"
-                                            class="pl-10 w-full" />
+                                            class="pl-10 w-ful focus:border-red-500 focus:ring-red-500" />
                                     </div>
                                 </label>
                             </div>
@@ -295,7 +243,7 @@
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             ✉️</div>
                                         <x-text-input type="email" name="email" required
-                                            placeholder="john@example.com" class="pl-10 w-full" />
+                                            placeholder="john@example.com" class="pl-10 w-full  focus:border-red-500 focus:ring-red-500" />
                                     </div>
                                 </label>
                             </div>
@@ -310,7 +258,7 @@
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             🔒</div>
                                         <x-text-input type="password" name="password" required
-                                            class="pl-10 w-full" />
+                                            class="pl-10 w-full focus:border-red-500 focus:ring-red-500" />
                                     </div>
                                 </label>
                             </div>
@@ -346,7 +294,7 @@
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             📞</div>
                                         <x-text-input name="telepon" required placeholder="0812-3456-7890"
-                                            class="pl-10 w-full" />
+                                            class="pl-10 w-full focus:border-red-500 focus:ring-red-500" />
                                     </div>
                                 </label>
                             </div>
@@ -371,7 +319,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         📅</div>
                                     <x-text-input type="date" name="tanggal_langganan"
-                                        value="{{ date('Y-m-d') }}" required class="pl-10 w-full" />
+                                        value="{{ date('Y-m-d') }}" required class="pl-10 w-full focus:border-red-500 focus:ring-red-500" />
                                 </div>
                             </label>
                         </div>
