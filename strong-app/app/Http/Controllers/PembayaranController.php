@@ -20,7 +20,7 @@ class PembayaranController extends Controller
             $user = User::all();
             $paket = Paket::all();
             $pelanggan = Pelanggan::all();
-            $tagihan = tagihan::where('status_pembayaran', 'belum_dibayar')->get();
+            $tagihan = tagihan::all();
 
             return view('admin.page.pembayaran.index', compact('pembayaran', 'user', 'paket', 'pelanggan', 'tagihan'));
         } catch (\Exception $e) {
@@ -31,51 +31,51 @@ class PembayaranController extends Controller
     public function store(Request $request)
     {
         // try {
+        $tanggal = null;
+        if ($request->input('status_verifikasi') == 'diterima') {
+            $tanggal = now();
+        } elseif ($request->input('status_verifikasi') == 'ditolak') {
+            $tanggal = now();
+        } else {
             $tanggal = null;
-            if ($request->input('status_verifikasi') == 'diterima') {
-                $tanggal = now();
-            } elseif ($request->input('status_verifikasi') == 'ditolak') {
-                $tanggal = now();
-            } else {
-                $tanggal = null;
-            }
+        }
 
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('pembayaran_images'), $imageName);
-            } else {
-                $imageName = null;
-            };
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('pembayaran_images'), $imageName);
+        } else {
+            $imageName = null;
+        };
 
 
-            $data = [
-                'user_id' => Auth::user()->id,
-                'tagihan_id' => $request->input('tagihan_id'),
-                'image' => $imageName,
-                'tanggal_kirim' => $request->input('tanggal_kirim'),
-                'status_verifikasi' => $request->input('status_verifikasi'),
-                'tanggal_verifikasi' => $tanggal,
-            ];
+        $data = [
+            'user_id' => Auth::user()->id,
+            'tagihan_id' => $request->input('tagihan_id'),
+            'image' => $imageName,
+            'tanggal_kirim' => $request->input('tanggal_kirim'),
+            'status_verifikasi' => $request->input('status_verifikasi'),
+            'tanggal_verifikasi' => $tanggal,
+        ];
 
-            pembayaran::create($data);
+        pembayaran::create($data);
 
-            $tagihan = tagihan::findOrFail($request->input('tagihan_id'));
-            $status = null;
-            if ($request->input('status_verifikasi') == 'diterima') {
-                $status = 'lunas';
-            } elseif ($request->input('status_verifikasi') == 'ditolak') {
-                $status = 'belum_dibayar';
-            } elseif ($request->input('status_verifikasi') == 'menunggu verifikasi') {
-                $status = 'menunggu_verifikasi';
-            }
+        $tagihan = tagihan::findOrFail($request->input('tagihan_id'));
+        $status = null;
+        if ($request->input('status_verifikasi') == 'diterima') {
+            $status = 'lunas';
+        } elseif ($request->input('status_verifikasi') == 'ditolak') {
+            $status = 'belum_dibayar';
+        } elseif ($request->input('status_verifikasi') == 'menunggu verifikasi') {
+            $status = 'menunggu_verifikasi';
+        }
 
-            $tagihan->update([
-                'status_pembayaran' => $status,
-            ]);
+        $tagihan->update([
+            'status_pembayaran' => $status,
+        ]);
 
-            return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
+        return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
         // } catch (\Exception $e) {
         //     return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
         // }
@@ -128,29 +128,28 @@ class PembayaranController extends Controller
     }
     public function destroy($id)
     {
-        try {
-            $data = pembayaran::findOrFail($id);
-            // Hapus gambar jika ada
-            if ($data->image && file_exists(public_path('pembayaran_images/' . $data->image))) {
-                unlink(public_path('pembayaran_images/' . $data->image));
-            }
+        $pembayaran = Pembayaran::findOrFail($id);
+        $tagihan   = Tagihan::findOrFail($pembayaran->tagihan_id);
 
-            // Update status pembayaran di tagihan
-            $tagihan = tagihan::findOrFail($data->tagihan_id);
-            // Jika status pembayaran adalah 'lunas', ubah menjadi 'belum_dibayar'
-            $status = null;
-            if ($tagihan->status_pembayaran == 'lunas') {
-                return back()->with('message_success', 'pembayaran sudah lunas, tidak bisa dihapus');
-            } else {
-                $status = 'belum_dibayar';
-                $data->delete();
-            }
-            $tagihan->update([
-                'status_pembayaran' => $status,
-            ]);
-            return back()->with('message_success', 'pembayaran berhasil dihapus');
-        } catch (\Exception $e) {
-            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
+        if ($tagihan->status_pembayaran === 'lunas') {
+            // Kembalikan error JSON dengan status 400
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Pembayaran sudah lunas, tidak bisa dihapus'
+            ], 400);
         }
+
+        // Hapus record dan file
+        $pembayaran->delete();
+        if ($pembayaran->image && file_exists(public_path('pembayaran_images/' . $pembayaran->image))) {
+            unlink(public_path('pembayaran_images/' . $pembayaran->image));
+        }
+        $tagihan->update(['status_pembayaran' => 'belum_dibayar']);
+
+        // Kembalikan sukses JSON (status 200)
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Pembayaran berhasil dihapus'
+        ], 200);
     }
 }
