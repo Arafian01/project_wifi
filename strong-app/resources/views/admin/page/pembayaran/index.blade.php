@@ -249,10 +249,12 @@
                                     class="w-full rounded-lg border-gray-200 focus:border-red-500 focus:ring-red-500">
                                     <option value="">👤 Pilih Tagihan...</option>
                                     @foreach ($tagihan as $t)
-                                        <option value="{{ $t->id }}">
-                                            {{ $t->pelanggan->user->name }},
-                                            {{ date('F Y', strtotime($t->bulan_tahun)) }}
-                                        </option>
+                                        @if ($t->status_pembayaran == 'belum_dibayar' || $t->status_pembayaran == 'ditolak')
+                                            <option value="{{ $t->id }}">
+                                                {{ $t->pelanggan->user->name }},
+                                                {{ date('F Y', strtotime($t->bulan_tahun)) }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -445,7 +447,7 @@
             // Populate values
 
             console.log(pembayaran.tagihan_id);
-            
+
             form.elements['tagihan_id'].value = pembayaran.tagihan_id;
             form.elements['tanggal_kirim'].value = pembayaran.tanggal_kirim;
             form.elements['status_verifikasi'].value = pembayaran.status_verifikasi;
@@ -469,21 +471,31 @@
                 confirmButtonText: 'Ya, Hapus!'
             });
             if (!result.isConfirmed) return;
+
             try {
-                await fetch(`/pembayaran/${id}`, {
-                    method: 'POST',
+                const response = await fetch(`/pembayaran/${id}`, {
+                    method: 'DELETE', // langsung pakai DELETE jika rutenya Route::delete
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json', // penting untuk FormRequest
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        _method: 'DELETE'
-                    })
+                    }
                 });
-                await Swal.fire('Terhapus!', 'Pembayaran berhasil dihapus.', 'success');
+
+                // Periksa status
+                const data = await response.json();
+                if (!response.ok) {
+                    // Tampilkan error
+                    await Swal.fire('Gagal!', data.message, 'error');
+                    return;
+                }
+
+                // Tampilkan sukses
+                await Swal.fire('Terhapus!', data.message, 'success');
                 setTimeout(() => location.reload(), 1200);
             } catch (err) {
-                Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+                // Kesalahan jaringan
+                await Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
                 console.error(err);
             }
         }
