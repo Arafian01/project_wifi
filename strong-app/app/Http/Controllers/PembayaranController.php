@@ -30,7 +30,7 @@ class PembayaranController extends Controller
 
     public function store(Request $request)
     {
-        try {
+        // try {
             $tanggal = null;
             if ($request->input('status_verifikasi') == 'diterima') {
                 $tanggal = now();
@@ -76,9 +76,9 @@ class PembayaranController extends Controller
             ]);
 
             return back()->with('message_success', 'Data pembayaran Berhasil Ditambahkan');
-        } catch (\Exception $e) {
-            return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
-        }
+        // } catch (\Exception $e) {
+        //     return redirect()->route('error.index')->with('error_message', 'Error: ' . $e->getMessage());
+        // }
     }
     public function update(Request $request, String $id)
     {
