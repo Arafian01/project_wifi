@@ -13,23 +13,38 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
+        // Sekarang bulan dan tahun
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
+        $currentMonthYear = Carbon::now()->format('m-Y');
 
-        // Jumlah pelanggan berdasarkan status
-        $pelangganStatus = Pelanggan::select('status', DB::raw('count(*) as total'))
+        // 1. Jumlah pelanggan berdasarkan status
+        $jumlahPelanggan = Pelanggan::select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        // Tagihan bulan ini berdasarkan status
-        $tagihanStatus = Tagihan::whereMonth('tanggal', $now->month)
-            ->whereYear('tanggal', $now->year)
+        // 2. Jumlah tagihan bulan ini berdasarkan status pembayaran
+        $jumlahTagihan = Tagihan::whereYear('jatuh_tempo', $currentYear)
+            ->whereMonth('jatuh_tempo', $currentMonth)
             ->select('status_pembayaran', DB::raw('count(*) as total'))
             ->groupBy('status_pembayaran')
             ->pluck('total', 'status_pembayaran');
 
-        // Penghasilan bulan ini dari tagihan yang lunas
-        $penghasilanBulanIni = Tagihan::all();
+        // 3. Jumlah penghasilan bulan ini (dari tagihan yang lunas)
+        $totalPenghasilan = Tagihan::whereYear('jatuh_tempo', $currentYear)
+            ->whereMonth('jatuh_tempo', $currentMonth)
+            ->where('status_pembayaran', 'lunas')
+            ->with('pelanggan.paket')
+            ->get()
+            ->sum(function ($tagihan) {
+                return $tagihan->pelanggan->paket->harga ?? 0;
+            });
 
-        return view('/', compact('pelangganStatus', 'tagihanStatus', 'penghasilanBulanIni'));
+        return view('dashboard', [
+            'jumlahPelanggan' => $jumlahPelanggan,
+            'jumlahTagihan' => $jumlahTagihan,
+            'totalPenghasilan' => $totalPenghasilan,
+        ]);
     }
+
 }
