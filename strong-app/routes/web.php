@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\LoginAPIController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\laporanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\PelangganController;
@@ -38,6 +39,7 @@ Route::resource('pelanggan', PelangganController::class)->middleware(['auth', Ro
 Route::resource('tagihan', TagihanController::class)->middleware(['auth', RoleMiddleware::class]);
 Route::resource('pembayaran', PembayaranController::class)->middleware(['auth', RoleMiddleware::class]);
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
+Route::resource('laporan', laporanController::class)->middleware(['auth', RoleMiddleware::class]);
 
 
 
