@@ -38,7 +38,7 @@ Route::resource('paket', PaketController::class)->middleware(['auth', RoleMiddle
 Route::resource('pelanggan', PelangganController::class)->middleware(['auth', RoleMiddleware::class]);
 Route::resource('tagihan', TagihanController::class)->middleware(['auth', RoleMiddleware::class]);
 Route::resource('pembayaran', PembayaranController::class)->middleware(['auth', RoleMiddleware::class]);
-Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
+Route::get('dashboardAdmin', [DashboardController::class, 'index'])->middleware('auth');
 Route::resource('laporan', laporanController::class)->middleware(['auth', RoleMiddleware::class]);
 
 
