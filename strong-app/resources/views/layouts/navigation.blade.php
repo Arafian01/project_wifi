@@ -70,7 +70,7 @@
                     {{-- saya ingin rolenya admin dan owner untuk mengelola laporan--}}
                     @can('access-laporan')
                     <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.index')" class="hover:text-red-600 transition-colors">
-                        {{ __('Laporan') }}
+                        {{ __('Laporan') }} 
                     </x-nav-link>
                     @endcan
                 </div>
